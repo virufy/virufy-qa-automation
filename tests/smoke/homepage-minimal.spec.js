@@ -1,4 +1,4 @@
-import { test } from '../../fixtures/appFixture';
+import { test } from '../../fixtures/appFixtures';
 
 test.describe('Minimal Homepage Validation', () => {
 
