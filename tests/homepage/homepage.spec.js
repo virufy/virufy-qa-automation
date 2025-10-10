@@ -18,6 +18,14 @@ test.describe('Homepage Validation', () => {
         await home.verifyNavigationLinks();
     });
 
+    test('should have working About Us dropdown on hover', async ({ home }) => {
+        await home.verifyAboutUsDropdown();
+    });
+
+    test('should have working top action buttons', async ({ home }) => {
+        await home.verifyTopActionButtons();
+    });
+
     test('should have working footer section and links', async ({ home }) => {
         await home.verifyFooterLinks();
     });

@@ -10,7 +10,15 @@ export class HomePage extends BasePage {
             homeLink: 'a[href="/en/"]',
             technologyLink: 'a[href="/en/ai/"][class*="font-semibold"]',
             aboutLink: 'a[href*="/en/story/"]',
+            mediaLink: 'a[href*="/en/news/"]',
             faqLink: 'a[href*="/en/faq/"]',
+
+            // Top action buttons
+            joinUsButton: 'a[href*="/en/join-us/"]',
+            donateButton: 'button:has-text("Donate"), a:has-text("Donate")',
+
+            // Dropdown menus
+            aboutDropdown: '.dropdown-menu',
 
             // Footer
             footer: 'footer',
@@ -24,7 +32,6 @@ export class HomePage extends BasePage {
     }
 
     // HomePage Methods
-
     async navigateToHome() {
         await this.navigateTo('/');
         await this.waitForPageLoad();
@@ -46,6 +53,7 @@ export class HomePage extends BasePage {
             { selector: this.selectors.homeLink, text: 'Home', expected: '/en/' },
             { selector: this.selectors.technologyLink, text: 'Technology', expected: '/en/ai/' },
             { selector: this.selectors.aboutLink, text: 'About Us', expected: '/en/story/' },
+            { selector: this.selectors.mediaLink, text: 'Media', expected: '/en/news/' },
             { selector: this.selectors.faqLink, text: 'FAQ', expected: '/en/faq/' }
         ];
 
@@ -58,6 +66,43 @@ export class HomePage extends BasePage {
         }
     }
 
+    // Validate About Us dropdown items
+    async verifyAboutUsDropdown() {
+        const aboutLink = this.page.locator(this.selectors.aboutLink);
+
+        await aboutLink.hover();
+        await this.page.waitForTimeout(1500);
+
+        // Check for the three expected dropdown items
+        const expectedItems = ['Advisors', 'Our Supporters', 'One Young World'];
+
+        for (const itemText of expectedItems) {
+            const itemLocator = this.page.locator(`a:has-text("${itemText}")`);
+            await expect(itemLocator).toBeVisible();
+        }
+    }
+
+    // Validate buttons for Join Us and Donate
+    async verifyTopActionButtons() {
+        // Check Join Us button - visibility and text
+        const joinUsButton = this.page.locator(this.selectors.joinUsButton).filter({ hasText: 'Join Us' });
+        await expect(joinUsButton).toBeVisible();
+
+        // Check Donate button
+        const donateCount = await this.page.locator(this.selectors.donateButton).count();
+
+        if (donateCount > 0) {
+            // Check if any donate button is visible
+            let foundVisibleDonate = false;
+            for (let i = 0; i < donateCount; i++) {
+                const button = this.page.locator(this.selectors.donateButton).nth(i);
+                if (await button.isVisible()) {
+                    foundVisibleDonate = true;
+                    break;
+                }
+            }
+        }
+    }
 
     async verifyFooterLinks() {
         await this.page.locator(this.selectors.footer).scrollIntoViewIfNeeded();
