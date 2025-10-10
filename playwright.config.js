@@ -15,7 +15,11 @@ export default defineConfig({
     testDir: './tests',
     timeout: 30 * 1000,
     retries: 0,
-    reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
+    reporter: [
+        ['list'],
+        ['html', { outputFolder: 'playwright-report', open: 'never' }],
+        ['allure-playwright', { outputFolder: 'allure-results' }]
+    ],
     use: {
         headless: true,
         baseURL: BASE_URL, // <-- Use the constant

@@ -12,6 +12,8 @@
     "test:chromium": "BROWSER=chromium npx playwright test",
     "test:firefox": "BROWSER=firefox npx playwright test",
     "test:webkit": "BROWSER=webkit npx playwright test",
+    "allure:generate": "npx allure generate allure-results --clean -o allure-report",
+    "allure:open": "npx allure open allure-report",
     "lint": "npx eslint . --ext .js,.ts",
     "format": "prettier --write .",
     "postinstall": "node ./scripts/check-env.js"
@@ -39,6 +41,8 @@
   "homepage": "https://github.com/virufy/virufy-qa-automation#readme",
   "devDependencies": {
     "@playwright/test": "^1.45.0",
+    "allure-commandline": "^2.34.1",
+    "allure-playwright": "^3.4.1",
     "dotenv": "^16.6.1",
     "eslint": "^9.6.0",
     "eslint-plugin-playwright": "^1.6.2",

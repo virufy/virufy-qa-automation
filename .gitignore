@@ -22,6 +22,10 @@ playwright-report/
 test-results/
 playwright/.cache/
 
+# Allure reporting
+allure-results/
+allure-report/
+
 # Test artifacts
 screenshots/
 videos/
