@@ -33,7 +33,9 @@ export class HomePage extends BasePage {
 
     // HomePage Methods
     async navigateToHome() {
-        await this.navigateTo('/');
+        await this.page.goto('/');
+        // Handle popup IMMEDIATELY after page loads, before anything else
+        await this.acceptCookies();
         await this.waitForPageLoad();
     }
 
@@ -68,6 +70,9 @@ export class HomePage extends BasePage {
 
     // Validate About Us dropdown items
     async verifyAboutUsDropdown() {
+        // Ensure we're on homepage and handle any popups
+        await this.navigateToHome();
+
         const aboutLink = this.page.locator(this.selectors.aboutLink);
 
         await aboutLink.hover();
@@ -80,6 +85,10 @@ export class HomePage extends BasePage {
             const itemLocator = this.page.locator(`a:has-text("${itemText}")`);
             await expect(itemLocator).toBeVisible();
         }
+
+        // Move mouse away to close dropdown
+        await this.page.mouse.move(0, 0);
+        await this.page.waitForTimeout(500);
     }
 
     // Validate buttons for Join Us and Donate

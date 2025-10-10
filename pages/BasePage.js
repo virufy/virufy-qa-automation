@@ -7,7 +7,10 @@ export class BasePage {
     // go to url
     async navigateTo(url) {
         await this.page.goto(url);
+        // Handle cookies immediately after page loads, before waiting for networkidle
+        await this.acceptCookies();
         await this.waitForPageLoad();
+        // Check for cookies again in case they appeared after page load
         await this.acceptCookies();
     }
 
@@ -17,9 +20,34 @@ export class BasePage {
     }
 
     async acceptCookies() {
-        const cookieAcceptButton = this.page.getByRole('button', { name: 'Accept and close' });
-        if (await cookieAcceptButton.isVisible({ timeout: 2000 })) {
-            await cookieAcceptButton.click();
+        try {
+            // Check immediately for popup without waiting
+            const cookieButtons = [
+                this.page.getByRole('button', { name: 'Accept and close' }),
+                this.page.getByRole('button', { name: 'Accept' }),
+                this.page.getByRole('button', { name: 'Accept all' })
+            ];
+
+            for (const button of cookieButtons) {
+                if (await button.isVisible({ timeout: 500 })) {
+                    await button.click();
+                    // Wait for popup to disappear before continuing
+                    await this.page.waitForTimeout(300);
+                    return;
+                }
+            }
+
+            // If no button found immediately, wait a bit and try again
+            await this.page.waitForTimeout(1000);
+            for (const button of cookieButtons) {
+                if (await button.isVisible({ timeout: 1000 })) {
+                    await button.click();
+                    await this.page.waitForTimeout(300);
+                    return;
+                }
+            }
+        } catch (error) {
+            // Continue if no popup found
         }
     }
 
