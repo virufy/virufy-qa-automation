@@ -1,9 +1,9 @@
 import { test } from '../../fixtures/appFixtures';
 
-test.describe('Minimal Homepage Validation', () => {
+test.describe('Homepage Validation', () => {
 
     test('should load homepage with correct title', async ({ home }) => {
-        await home.verifyPageTitle('Virufy: Developing Cutting Edge AI Technology in Healthcare');
+        await home.verifyPageTitle('Virufy | AI-Powered Respiratory Health Screening');
     });
 
     test('should display main content sections', async ({ home }) => {

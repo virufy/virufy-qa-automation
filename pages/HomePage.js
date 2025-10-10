@@ -6,8 +6,9 @@ export class HomePage extends BasePage {
         super(page);
 
         this.selectors = {
-            // Navigation links
+            // Navigation links - more specific targeting
             homeLink: 'a[href="/en/"]',
+            technologyLink: 'a[href="/en/ai/"][class*="font-semibold"]',
             aboutLink: 'a[href*="/en/story/"]',
             faqLink: 'a[href*="/en/faq/"]',
 
@@ -43,6 +44,7 @@ export class HomePage extends BasePage {
     async verifyNavigationLinks() {
         const links = [
             { selector: this.selectors.homeLink, text: 'Home', expected: '/en/' },
+            { selector: this.selectors.technologyLink, text: 'Technology', expected: '/en/ai/' },
             { selector: this.selectors.aboutLink, text: 'About Us', expected: '/en/story/' },
             { selector: this.selectors.faqLink, text: 'FAQ', expected: '/en/faq/' }
         ];
