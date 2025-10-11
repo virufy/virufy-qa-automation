@@ -47,6 +47,12 @@ It follows the Page Object Model (POM) design pattern for scalability, readabili
    ```bash
    npx playwright show-report
    ```
+
+## Allure Reporting
+Generate allure test reports with detailed dashboard:
+```bash
+npm test && npm run allure:generate && npm run allure:open
+```
 ## Scripts
 Common npm commands:
 - `npm test` – run all tests  
@@ -54,6 +60,8 @@ Common npm commands:
 - `npm run test:chromium` – run tests in chrome browser
 - `npm run test:chromium -- --headed` – run tests in chrome browser in headed mode
 - `npm run test:all-browsers` – run tests in all browsers  
+- `npm run allure:generate` – generate allure report
+- `npm run allure:open` – open allure report
 - `npm run lint` – check code quality  
 - `npm run format` – auto-format code 
 
