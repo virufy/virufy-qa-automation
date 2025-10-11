@@ -1,12 +1,19 @@
 import { test } from '../../fixtures/appFixtures';
+import * as allure from "allure-js-commons";
 
-test.describe('Minimal Homepage Validation', () => {
+test.describe('Homepage Smoke Tests', () => {
 
-    test('should load homepage with correct title', async ({ home }) => {
+    test('smoke: homepage loads with correct title', async ({ home }) => {
+        await allure.feature('Smoke Tests');
+        await allure.severity('critical');
+        await allure.tag('smoke');
         await home.verifyPageTitle('Virufy | AI-Powered Respiratory Health Screening');
     });
 
-    test('should display main content sections', async ({ home }) => {
+    test('smoke: main content sections are visible', async ({ home }) => {
+        await allure.feature('Smoke Tests');
+        await allure.severity('critical');
+        await allure.tag('smoke');
         await home.verifyMainHeadings([
             'Welcome to Virufy',
             'Your Digital Health Companion',
@@ -14,11 +21,17 @@ test.describe('Minimal Homepage Validation', () => {
         ]);
     });
 
-    test('should have working main navigation links', async ({ home }) => {
+    test('smoke: basic navigation works', async ({ home }) => {
+        await allure.feature('Smoke Tests');
+        await allure.severity('critical');
+        await allure.tag('smoke');
         await home.verifyNavigationLinks();
     });
 
-    test('should have working footer section and links', async ({ home }) => {
+    test('smoke: footer section is present', async ({ home }) => {
+        await allure.feature('Smoke Tests');
+        await allure.severity('critical');
+        await allure.tag('smoke');
         await home.verifyFooterLinks();
     });
 });
