@@ -50,8 +50,17 @@ It follows the Page Object Model (POM) design pattern for scalability, readabili
 
 ## Allure Reporting
 Generate allure test reports with detailed dashboard:
+
+Step 0. Run the tests
+
+Step a. This generates the allure-report
 ```bash
-npm test && npm run allure:generate && npm run allure:open
+npm run allure:generate
+```
+
+Step b. This opens the allure-report dashboard
+```bash
+npm run allure:open
 ```
 ## Scripts
 Common npm commands:
