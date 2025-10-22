@@ -45,7 +45,7 @@ export class HomePage extends BasePage {
 
     async verifyMainHeadings(headings) {
         for (const heading of headings) {
-            const locator = this.page.locator('h1, h2').filter({ hasText: heading });
+            const locator = this.page.locator('h1, h2'  ).filter({ hasText: heading });
             await expect(locator).toBeVisible();
         }
     }
