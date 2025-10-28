@@ -3,7 +3,7 @@ import * as allure from "allure-js-commons";
 
 test.describe('Advisors Page Validation', () => {
 
-     /* test('Advisors Page should have correct Title', async ({ advisors }) => {
+      test('Advisors Page should have correct Title', async ({ advisors }) => {
         await allure.feature('Advisors');
         await allure.severity('critical');
         await allure.tag('Advisors');
@@ -20,7 +20,7 @@ test.describe('Advisors Page Validation', () => {
             'We unite from across the world to defeat infectious diseases one cough at a time.'
         ]); 
         
-    });*/
+    });
 
     test('should have working Advisors links', async ({ advisors }) => {
         await allure.feature('Advisors');
@@ -31,11 +31,11 @@ test.describe('Advisors Page Validation', () => {
         await advisors.verifyAdvisorsLinkAndImages();
     });
 
-    /*test('should have working footer section and links on Advisors Page', async ({ advisors }) => {
+    test('should have working footer section and links on Advisors Page', async ({ advisors }) => {
         await allure.feature('Advisors');
         await allure.severity('critical');
         await allure.tag('Advisors');
         await advisors.navigateToAdvisors();
         await advisors.verifyFooterLinks();
-    });*/
+    });
 });
