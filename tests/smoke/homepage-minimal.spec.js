@@ -3,7 +3,7 @@ import * as allure from "allure-js-commons";
 
 test.describe('Homepage Smoke Tests', () => {
 
- /*   test('smoke: homepage loads with correct title', async ({ home }) => {
+    test('smoke: homepage loads with correct title', async ({ home }) => {
         await allure.feature('Smoke Tests');
         await allure.severity('critical');
         await allure.tag('smoke');
@@ -33,7 +33,7 @@ test.describe('Homepage Smoke Tests', () => {
         await allure.severity('critical');
         await allure.tag('smoke');
         await home.verifyFooterLinks();
-    });*/
+    });
 
 
 });

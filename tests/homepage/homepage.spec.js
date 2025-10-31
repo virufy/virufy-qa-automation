@@ -3,7 +3,7 @@ import * as allure from "allure-js-commons";
 
 test.describe('Homepage Validation', () => {
 
-  /*  test('should load homepage with correct title', async ({ home }) => {
+    test('should load homepage with correct title', async ({ home }) => {
         await allure.feature('Homepage');
         await allure.severity('critical');
         await allure.tag('homepage');
@@ -47,6 +47,6 @@ test.describe('Homepage Validation', () => {
         await allure.severity('critical');
         await allure.tag('homepage');
         await home.verifyFooterLinks();
-    });  */
+    });  
 
 });
