@@ -4,7 +4,6 @@ import { expect } from '@playwright/test';
 export class HomePage extends BasePage {
     constructor(page) {
         super(page);
-        this.page = page;
 
         // --- Navigation ---
         this.homeLink = page.getByRole('link', { name: /^Home$/i });
@@ -20,8 +19,13 @@ export class HomePage extends BasePage {
         // --- Dropdown / Menus ---
         this.aboutDropdownItems = page.getByRole('menu');
 
+        // 'About Us' Dropdown Items
+        this.advisorsLink = this.page.getByRole('link', { name: 'Advisors' });
+        this.supportersLink = this.page.getByRole('link', { name: 'Our Supporters' });
+        this.oneYoungWorldLink = this.page.getByRole('link', { name: 'One Young World' });
+
         // --- Footer ---
-        this.footer = page.getByRole('contentinfo').or(page.locator('footer'));
+        this.footer = page.getByRole('contentinfo');
         this.cookiePolicy = page.getByRole('link', { name: /Cookie Policy/i });
         this.privacyPolicy = page.getByRole('link', { name: /Privacy Policy/i });
         this.doNotSellInfo = page.getByRole('link', { name: /Do Not Sell/i });
@@ -67,38 +71,20 @@ export class HomePage extends BasePage {
 
     async verifyAboutUsDropdown() {
         await this.navigateToHome();
-
         await this.aboutLink.hover();
-        await this.page.waitForTimeout(1500);
-
-        const expectedItems = ['Advisors', 'Our Supporters', 'One Young World'];
-        for (const text of expectedItems) {
-            // Try menuitem first, fallback to link if menuitem role is not available
-            const itemLocator = this.page.getByRole('menuitem', { name: new RegExp(text, 'i') })
-                .or(this.page.getByRole('link', { name: new RegExp(text, 'i') }));
-            await expect(itemLocator).toBeVisible();
-        }
+        await expect(this.advisorsLink).toBeVisible();
+        await expect(this.supportersLink).toBeVisible();
+        await expect(this.oneYoungWorldLink).toBeVisible();
 
         await this.page.mouse.move(0, 0);
     }
 
     async verifyTopActionButtons() {
         await expect(this.joinUsButton).toBeVisible();
-
-        // Donate button may be link or button
-        const donateButtons = await this.page.getByRole('button', { name: /Donate/i }).all();
-        let visibleFound = false;
-        for (const button of donateButtons) {
-            if (await button.isVisible()) {
-                visibleFound = true;
-                break;
-            }
-        }
-        expect(visibleFound).toBe(true);
+        await expect(this.donateButton).toBeVisible();
     }
 
     async verifyFooterLinks() {
-        await this.footer.scrollIntoViewIfNeeded();
         await expect(this.cookiePolicy).toBeVisible();
         await expect(this.privacyPolicy).toBeVisible();
         await expect(this.doNotSellInfo).toBeVisible();
