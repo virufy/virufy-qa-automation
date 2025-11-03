@@ -76,7 +76,7 @@ export class HomePage extends BasePage {
         const aboutLink = this.page.locator(this.selectors.aboutLink);
 
         await aboutLink.hover();
-        await this.page.waitForTimeout(1500);
+        await this.page.waitForTimeout(2000);
 
         // Check for the three expected dropdown items
         const expectedItems = ['Advisors', 'Our Supporters', 'One Young World'];
