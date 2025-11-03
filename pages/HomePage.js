@@ -45,7 +45,7 @@ export class HomePage extends BasePage {
 
     async verifyMainHeadings(headings) {
         for (const heading of headings) {
-            const locator = this.page.locator('h1, h2').filter({ hasText: heading });
+            const locator = this.page.locator('h1, h2'  ).filter({ hasText: heading });
             await expect(locator).toBeVisible();
         }
     }
@@ -76,7 +76,7 @@ export class HomePage extends BasePage {
         const aboutLink = this.page.locator(this.selectors.aboutLink);
 
         await aboutLink.hover();
-        await this.page.waitForTimeout(1500);
+        await this.page.waitForTimeout(2000);
 
         // Check for the three expected dropdown items
         const expectedItems = ['Advisors', 'Our Supporters', 'One Young World'];

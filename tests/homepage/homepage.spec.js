@@ -47,5 +47,6 @@ test.describe('Homepage Validation', () => {
         await allure.severity('critical');
         await allure.tag('homepage');
         await home.verifyFooterLinks();
-    });
+    });  
+
 });
