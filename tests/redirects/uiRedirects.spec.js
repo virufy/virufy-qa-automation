@@ -13,7 +13,7 @@ const GOOGLE_HOSTS = [
     'presentation.google.com'
 ];
 
-test.describe('🌐 UI Redirect and Page Validation Suite', () => {
+test.describe(' UI Redirect and Page Validation Suite', () => {
     for (const redirect of redirects) {
         const { from, to, titleKeyword, external = false } = redirect;
 
