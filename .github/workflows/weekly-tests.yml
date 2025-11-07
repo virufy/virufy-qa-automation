@@ -27,14 +27,19 @@ jobs:
       - name: Install jq
         run: apt-get update && apt-get install -y jq
 
+      - name: Debug BASE_URL
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: echo "BASE_URL is set (masked): ${BASE_URL}"
+
       - name: Run Playwright tests (JSON reporter)
         id: run_tests
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
-          mkdir reports
-          npx playwright test tests/smoke --reporter=json > reports/report1.json
+          mkdir -p reports
+          npx playwright test tests/smoke --reporter=json > reports/report1.json || true
 
       - name: Generate HTML summary table
         id: mini_report
@@ -47,14 +52,17 @@ jobs:
             echo "<table border='1' cellpadding='4' cellspacing='0'><tr><th>Test</th><th>Status</th></tr>" >> summary.html
             jq -r '.suites[].specs[] | "<tr><td>\(.title)</td><td>\(.tests[0].results[0].status)</td></tr>"' "$report_file" >> summary.html || true
             echo "</table>" >> summary.html
-
-            passed=$(jq '[.suites[].specs[].tests[].results[].status] | map(select(.=="passed")) | length' "$report_file")
-            failed=$(jq '[.suites[].specs[].tests[].results[].status] | map(select(.=="failed")) | length' "$report_file")
-            total=$((passed+failed))
-            echo "passed=$passed" >> $GITHUB_OUTPUT
-            echo "failed=$failed" >> $GITHUB_OUTPUT
-            echo "total=$total" >> $GITHUB_OUTPUT
           fi
+          # Export HTML and stats as GitHub outputs
+          echo "html<<EOF" >> $GITHUB_OUTPUT
+          cat summary.html >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          passed=$(jq '[.suites[].specs[].tests[].results[].status] | map(select(.=="passed")) | length' "$report_file" || echo 0)
+          failed=$(jq '[.suites[].specs[].tests[].results[].status] | map(select(.=="failed")) | length' "$report_file" || echo 0)
+          total=$((passed+failed))
+          echo "passed=$passed" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+          echo "total=$total" >> $GITHUB_OUTPUT
 
       - name: Send summary email
         if: always()
@@ -74,7 +82,7 @@ jobs:
             <p>Failed: ${{ steps.mini_report.outputs.failed }}</p>
             <br/>
             <p>Detailed test summary:</p>
-            $(cat summary.html)
+            ${{ steps.mini_report.outputs.html }}
             <br/>
             <p>Full logs and artifacts:</p>
-            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">GitHub Actions Run</a></p>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View GitHub Actions Run</a></p>
