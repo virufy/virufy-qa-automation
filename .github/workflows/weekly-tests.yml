@@ -12,7 +12,7 @@ jobs:
     container: mcr.microsoft.com/playwright:v1.55.0-jammy
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -29,100 +29,38 @@ jobs:
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: |
-          # Run tests - HTML reporter is already configured in playwright.config.js
-          npx playwright test tests/smoke || true
+        run: npx playwright test --reporter=html || true
 
-      - name: Parse HTML report data
+      - name: Parse HTML report summary
         id: parse_results
         run: |
-          cat > parse-results.mjs << 'EOF'
+          node - <<'EOF'
           import fs from 'fs';
-          import path from 'path';
-          
-          let passed = 0, failed = 0, total = 0;
-          let dataFile = null;
-          
-          // Playwright HTML report stores data in playwright-report/data/ directory
-          const dataDir = 'playwright-report/data';
-          
-          if (fs.existsSync(dataDir)) {
-            console.log('Found data directory, listing files...');
-            const files = fs.readdirSync(dataDir);
-            console.log('Files in data directory:', files);
-            
-            // Look for report.json or similar files
-            const possibleFiles = ['report.json', 'data.json', 'index.json'];
-            for (const fileName of possibleFiles) {
-              const filePath = path.join(dataDir, fileName);
-              if (fs.existsSync(filePath)) {
-                dataFile = filePath;
-                console.log(`Found report data at: ${filePath}`);
-                break;
-              }
-            }
-            
-            // If not found, try to find any JSON file in the data directory
-            if (!dataFile) {
-              for (const file of files) {
-                if (file.endsWith('.json')) {
-                  dataFile = path.join(dataDir, file);
-                  console.log(`Found JSON file: ${dataFile}`);
-                  break;
-                }
-              }
-            }
-          }
-          
-          if (dataFile) {
-            try {
-              const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
-              console.log('Successfully parsed JSON data');
-              
-              // Recursive function to count tests from suites
-              function countTests(suite) {
-                if (suite.specs && Array.isArray(suite.specs)) {
-                  suite.specs.forEach(spec => {
-                    if (spec.tests && Array.isArray(spec.tests) && spec.tests.length > 0) {
-                      const test = spec.tests[0];
-                      if (test.results && Array.isArray(test.results) && test.results.length > 0) {
-                        const status = test.results[test.results.length - 1].status;
-                        if (status) {
-                          total++;
-                          if (status === 'passed') passed++;
-                          if (status === 'failed') failed++;
-                        }
-                      }
-                    }
-                  });
-                }
-                if (suite.suites && Array.isArray(suite.suites)) {
-                  suite.suites.forEach(countTests);
-                }
-              }
-              
-              if (data.suites && Array.isArray(data.suites)) {
-                data.suites.forEach(countTests);
-              } else {
-                console.log('No suites found in data. Data structure:', Object.keys(data));
-              }
-            } catch (error) {
-              console.error(`Error parsing HTML report data: ${error.message}`);
-            }
+          let passed=0, failed=0, total=0;
+          const file='playwright-report/data.json';
+          if (fs.existsSync(file)) {
+            const data=JSON.parse(fs.readFileSync(file,'utf8'));
+            const count=(s)=>{
+              s.specs?.forEach(sp=>{
+                const st=sp.tests?.[0]?.results?.at(-1)?.status;
+                if(st){total++; if(st==='passed')passed++; if(st==='failed')failed++;}
+              });
+              s.suites?.forEach(count);
+            };
+            data.suites?.forEach(count);
           } else {
-            console.log('HTML report data file not found in data directory');
-          }
-          
-          const output = process.env.GITHUB_OUTPUT;
-          if (output) {
-            fs.appendFileSync(output, `passed=${passed}\n`);
-            fs.appendFileSync(output, `failed=${failed}\n`);
-            fs.appendFileSync(output, `total=${total}\n`);
+            console.log('No report data.json found');
           }
           console.log(`Total: ${total}, Passed: ${passed}, Failed: ${failed}`);
+          console.log(`passed=${passed}`);
+          console.log(`failed=${failed}`);
+          console.log(`total=${total}`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,`passed=${passed}\nfailed=${failed}\ntotal=${total}\n`);
           EOF
-          
-          node parse-results.mjs
+        outputs:
+          passed: ${{ steps.parse_results.outputs.passed }}
+          failed: ${{ steps.parse_results.outputs.failed }}
+          total: ${{ steps.parse_results.outputs.total }}
 
       - name: Send summary email
         if: always()
@@ -138,22 +76,9 @@ jobs:
           html_body: |
             <h3>Playwright Test Results</h3>
             <table border="1" cellpadding="10" style="border-collapse:collapse;font-family:Arial,sans-serif;">
-              <tr style="background:#f0f0f0;">
-                <th style="padding:10px;">Metric</th>
-                <th style="padding:10px;">Count</th>
-              </tr>
-              <tr>
-                <td style="padding:10px;"><strong>Total Tests</strong></td>
-                <td style="padding:10px;">${{ steps.parse_results.outputs.total }}</td>
-              </tr>
-              <tr style="background:#e8f5e9;">
-                <td style="padding:10px;"><strong>Passed</strong></td>
-                <td style="padding:10px;color:green;font-weight:bold;">${{ steps.parse_results.outputs.passed }}</td>
-              </tr>
-              <tr style="background:#ffebee;">
-                <td style="padding:10px;"><strong>Failed</strong></td>
-                <td style="padding:10px;color:red;font-weight:bold;">${{ steps.parse_results.outputs.failed }}</td>
-              </tr>
+              <tr><th>Metric</th><th>Count</th></tr>
+              <tr><td><b>Total</b></td><td>${{ steps.parse_results.outputs.total }}</td></tr>
+              <tr><td><b>Passed</b></td><td style="color:green;"><b>${{ steps.parse_results.outputs.passed }}</b></td></tr>
+              <tr><td><b>Failed</b></td><td style="color:red;"><b>${{ steps.parse_results.outputs.failed }}</b></td></tr>
             </table>
-            <br/>
-            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Full Run</a></p>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View full logs</a></p>
