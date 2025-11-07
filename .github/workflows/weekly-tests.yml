@@ -3,7 +3,7 @@ name: Playwright Weekly CI Tests (Email Summary)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 1"
+    - cron: "0 8 * * 1"   # Every Monday 8 AM UTC
   push:
 
 jobs:
@@ -29,20 +29,31 @@ jobs:
           apt-get update
           apt-get install -y jq
 
-      - name: Run Playwright tests (JSON reporter to file)
+      - name: Debug BASE_URL
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: echo "BASE_URL is set (masked): ${BASE_URL}"
+
+      - name: Run Playwright tests (JSON reporter)
         id: run_tests
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           mkdir -p reports
-          npx playwright test tests/smoke --reporter=github,json=reports/report.json || true
+          # Run with both GitHub and JSON reporters; output JSON to ./reports
+          npx playwright test tests/smoke --reporter=github,json --output=reports || true
 
       - name: Generate HTML summary table
         id: mini_report
         run: |
-          report_file="reports/report.json"
-          if [ ! -s "$report_file" ]; then
+          report_file="reports/test-results.json"
+          # fallback to default JSON name if different Playwright version
+          if [ ! -f "$report_file" ]; then
+            report_file=$(find reports -name "*.json" | head -n 1 || echo "")
+          fi
+
+          if [ -z "$report_file" ] || [ ! -s "$report_file" ]; then
             echo "<p>No JSON report found or tests did not run.</p>" > summary.html
             passed=0
             failed=0
@@ -50,7 +61,6 @@ jobs:
           else
             echo "<h3>Playwright Test Summary</h3>" > summary.html
             echo "<table border='1' cellpadding='4' cellspacing='0'><tr><th>Test</th><th>Status</th></tr>" >> summary.html
-            # Robust extraction: find any object with "tests" and a "title", then take the first result status
             jq -r '
               [ .. | objects
                 | select(has("tests") and has("title"))
@@ -61,13 +71,11 @@ jobs:
             ' "$report_file" >> summary.html || true
             echo "</table>" >> summary.html
 
-            # Totals based on all result statuses found anywhere
             passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
             failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
             total=$((passed+failed))
           fi
 
-          # Export HTML and counts for the email step
           echo "html<<EOF" >> $GITHUB_OUTPUT
           cat summary.html >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
