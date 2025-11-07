@@ -108,4 +108,4 @@ jobs:
               ${{ steps.parse_results.outputs.html_rows }}
             </table>
             <br/>
-            <p>📊 <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ env.REPORT_DATE }}/index.html">View Full Playwright Report</a></p>
+            <p>📊 <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ env.REPORT_DATE }}/index.html">View Full Playwright Report Here</a></p>
