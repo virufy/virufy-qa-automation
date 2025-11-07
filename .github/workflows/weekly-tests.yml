@@ -29,7 +29,7 @@ jobs:
       - name: Run weekly folder tests with Allure
         continue-on-error: true
         id: run_tests
-        run: npx playwright test tests/weekly --reporter=line,allure-playwright
+        run: npx playwright test tests/smoke --reporter=line,allure-playwright
 
       - name: Generate Allure report
         run: |
