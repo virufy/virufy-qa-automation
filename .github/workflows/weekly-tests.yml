@@ -121,7 +121,7 @@ jobs:
             footer {text-align:right; color:#777; font-size:12px; margin-top:25px;}
           </style></head><body>" >> "$INDEX_FILE"
 
-          echo "<h2>📈 Allure Reports Archive (Eastern Time)</h2>" >> "$INDEX_FILE"
+          echo "<h2>📈 Allure Reports Archive </h2>" >> "$INDEX_FILE"
 
           first=true
           for d in $(ls -1 allure | sort -r); do
@@ -164,7 +164,6 @@ jobs:
                 Virufy QA Automation Report — ${{ env.REPORT_DAY }}
               </h2>
 
-              <p style="font-size:14px;">Below is the summary of the latest Playwright test run:</p>
 
               <table border="1" cellpadding="10" style="border-collapse:collapse;width:100%;font-size:14px;">
                 <tr style="background:#f0f0f0;"><th>Metric</th><th>Count</th></tr>
@@ -174,7 +173,7 @@ jobs:
               </table>
 
               <br/>
-              <h4>🧩 Detailed Test Results</h4>
+              <h4> Detailed Test Results</h4>
               <table border="1" cellpadding="8" style="border-collapse:collapse;width:100%;font-size:13px;">
                 <tr style="background:#f0f0f0;"><th>Test Name</th><th>Status</th></tr>
                 ${{ steps.parse_results.outputs.html_rows }}
