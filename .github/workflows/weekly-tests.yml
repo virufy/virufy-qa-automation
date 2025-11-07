@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -96,6 +98,7 @@ jobs:
       - name: Update Allure Reports Index
         if: always()
         run: |
+          git config --global --add safe.directory /__w/virufy-qa-automation/virufy-qa-automation
           git fetch origin gh-pages
           git checkout gh-pages
 
