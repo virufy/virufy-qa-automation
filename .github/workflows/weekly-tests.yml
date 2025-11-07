@@ -79,6 +79,7 @@ jobs:
           subject: "Playwright CI Report - ${{ steps.parse_results.outputs.passed }} Passed / ${{ steps.parse_results.outputs.failed }} Failed"
           to: ${{ secrets.REPORT_RECIPIENT }}
           from: "Playwright CI <${{ secrets.SMTP_USER }}>"
+          attachments: playwright-report/index.html
           html_body: |
             <h3>Playwright Test Results Summary</h3>
             <table border="1" cellpadding="10" style="border-collapse:collapse;font-family:Arial,sans-serif;">
