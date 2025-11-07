@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
 
       - name: Install dependencies
         run: npm ci
@@ -26,6 +26,8 @@ jobs:
 
       # 🧪 Run only tests in the "weekly" folder
       - name: Run weekly folder tests with Allure
+        continue-on-error: true
+        id: run_tests
         run: npx playwright test tests/weekly --reporter=line,allure-playwright
 
       - name: Generate Allure report
@@ -59,7 +61,7 @@ jobs:
           username: ${{ secrets.SMTP_USER }}
           password: ${{ secrets.SMTP_PASS }}
           subject: "Weekly Allure Report — ${{ steps.summary.outputs.passed }} passed / ${{ steps.summary.outputs.failed }} failed"
-          to: qa1@gmail.com, qa2@gmail.com, qa3@gmail.com
+          to: ${{ secrets.REPORT_RECIPIENT }}
           from: "Playwright CI <${{ secrets.SMTP_USER }}>"
           body: |
             ✅ Total tests: ${{ steps.summary.outputs.total }}
