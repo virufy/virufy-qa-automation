@@ -36,53 +36,51 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           mkdir -p reports
-          # FIX: Run with 'github' and 'json' reporters.
-          # The '--output' flag tells all reporters where to save files.
-          # The json report will be at 'reports/report.json'
           npx playwright test tests/smoke --reporter=github,json --output=reports || true
 
       - name: Generate HTML summary table
         id: mini_report
         run: |
-          # ---
-          # ⬇️ FIX 1: Point to the correct report file ⬇️
-          # ---
-          report_file="reports/report.json"
-          
-          if [ ! -s "$report_file" ]; then
+          report_file="reports/test-results.json"
+          if [ ! -f "$report_file" ]; then
+            report_file=$(find reports -name "*.json" | head -n 1 || echo "")
+          fi
+
+          if [ -z "$report_file" ] || [ ! -s "$report_file" ]; then
             echo "<p>No JSON report found or tests did not run.</p>" > summary.html
             passed=0
             failed=0
             total=0
           else
             echo "<h3>Playwright Test Summary</h3>" > summary.html
-            echo "<table border='1' cellpadding='4' cellspacing='0'><tr><th>Test</th><th>Status</th></tr>" >> summary.html
-            
-            # ---
-            # ⬇️ FIX 2: Use a precise jq query to get test titles and status ⬇️
-            # This iterates through all suites, all specs, and all tests to find results.
-            # ---
+            echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;'><tr style='background:#f0f0f0;'><th>Test Name</th><th>Status</th></tr>" >> summary.html
+
+            # Parse all test titles + statuses (supports nested Playwright 1.55 schema)
             jq -r '
-              .suites[] | .suites[]? | .specs[] | 
-              "<tr><td>\(.title)</td><td>\(.tests[0].results[0].status)</td></tr>"
+              [ .. | objects
+                | select(has("title") and has("tests"))
+                | {title: .title, status: (.tests[].results[].status // "unknown")}
+              ]
+              | unique_by(.title)
+              | .[]
+              | "<tr><td>\(.title)</td><td style=\"color:" + (if .status=="passed" then "green" elif .status=="failed" then "red" else "black" end) + ";\">\(.status)</td></tr>"
             ' "$report_file" >> summary.html || true
+
             echo "</table>" >> summary.html
 
-            # ---
-            # ⬇️ FIX 3: Use a precise jq query to get correct pass/fail counts ⬇️
-            # ---
-            passed=$(jq -r '[.suites[].suites[]?.specs[] | select(.ok == true)] | length' "$report_file" || echo 0)
-            failed=$(jq -r '[.suites[].suites[]?.specs[] | select(.ok == false)] | length' "$report_file" || echo 0)
+            passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
+            failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
             total=$((passed+failed))
           fi
-          
-          # Export HTML and counts for the email step
-          echo "html<<EOF" >> $GITHUB_OUTPUT
-          cat summary.html >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "passed=$passed" >> $GITHUB_OUTPUT
-          echo "failed=$failed" >> $GITHUB_OUTPUT
-          echo "total=$total" >> $GITHUB_OUTPUT
+
+          {
+            echo "html<<EOF"
+            cat summary.html
+            echo "EOF"
+            echo "passed=$passed"
+            echo "failed=$failed"
+            echo "total=$total"
+          } >> $GITHUB_OUTPUT
 
       - name: Send summary email
         if: always()
