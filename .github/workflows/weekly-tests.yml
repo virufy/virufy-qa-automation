@@ -39,11 +39,11 @@ jobs:
           # Run with both GitHub and JSON reporters; output JSON to ./reports
           npx playwright test tests/smoke --reporter=github,json --output=reports || true
 
-      - name: Generate HTML summary table
+        
+        - name: Generate HTML summary table
         id: mini_report
         run: |
           report_file="reports/test-results.json"
-          # fallback to default JSON name if different Playwright version
           if [ ! -f "$report_file" ]; then
             report_file=$(find reports -name "*.json" | head -n 1 || echo "")
           fi
@@ -55,17 +55,22 @@ jobs:
             total=0
           else
             echo "<h3>Playwright Test Summary</h3>" > summary.html
-            echo "<table border='1' cellpadding='4' cellspacing='0'><tr><th>Test</th><th>Status</th></tr>" >> summary.html
+            echo "<table border='1' cellpadding='6' cellspacing='0'><tr><th>Test Name</th><th>Status</th></tr>" >> summary.html
+
+            # ✅ robust recursive jq filter that matches Playwright 1.55 structure
             jq -r '
               [ .. | objects
-                | select(has("tests") and has("title"))
-                | {title: .title, status: (.tests[0].results[0].status // "unknown")}
+                | select(has("title") and has("tests"))
+                | {title: .title, status: (.tests[].results[].status // "unknown")}
               ]
+              | unique_by(.title)
               | .[]
               | "<tr><td>\(.title)</td><td>\(.status)</td></tr>"
             ' "$report_file" >> summary.html || true
+
             echo "</table>" >> summary.html
 
+            # ✅ count totals regardless of depth
             passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
             failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
             total=$((passed+failed))
@@ -77,6 +82,7 @@ jobs:
           echo "passed=$passed" >> $GITHUB_OUTPUT
           echo "failed=$failed" >> $GITHUB_OUTPUT
           echo "total=$total" >> $GITHUB_OUTPUT
+
 
       - name: Send summary email
         if: always()
