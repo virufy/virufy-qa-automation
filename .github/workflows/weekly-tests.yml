@@ -108,25 +108,42 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
 
-          export TZ="America/New_York"
-
           mkdir -p tmp-index
-          echo "<h2>📈 Allure Reports Archive</h2><ul>" > tmp-index/index.html
+          INDEX_FILE="$(pwd)/tmp-index/index.html"
 
+          echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Allure Reports Archive</title>" > "$INDEX_FILE"
+          echo "<style>
+            body {font-family: Arial, sans-serif; background:#f9fafc; margin:20px;}
+            h2 {text-align:center; color:#004aad;}
+            .report-card {background:#fff; border:1px solid #ddd; border-radius:10px; padding:12px 18px; margin:8px auto; width:60%; box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+            .latest {border-left:6px solid #28a745;}
+            a {text-decoration:none; color:#0366d6; font-weight:bold;}
+            footer {text-align:right; color:#777; font-size:12px; margin-top:25px;}
+          </style></head><body>" >> "$INDEX_FILE"
+
+          echo "<h2>📈 Allure Reports Archive (Eastern Time)</h2>" >> "$INDEX_FILE"
+
+          first=true
           for d in $(ls -1 allure | sort -r); do
-            # Convert folder name (YYYY-MM-DD_HH-MM-SS) → readable text
             readable=$(echo "$d" | sed -E 's/_/ /; s/([0-9]{2})-([0-9]{2})-([0-9]{2})$/\1:\2:\3/' | \
-            xargs -I{} date -d "{}" '+%b %d %Y — %H:%M:%S' 2>/dev/null || echo "$d")
-            echo "<li><a href='allure/$d/index.html'>$readable</a></li>" >> tmp-index/index.html
+                       xargs -I{} date -u -d "{} -5 hours" '+%b %d %Y — %H:%M:%S' 2>/dev/null || echo "$d")
+            if [ "$first" = true ]; then
+              echo "<div class='report-card latest'><a href='allure/$d/index.html'>🟢 $readable (Latest)</a></div>" >> "$INDEX_FILE"
+              first=false
+            else
+              echo "<div class='report-card'><a href='allure/$d/index.html'>$readable</a></div>" >> "$INDEX_FILE"
+            fi
           done
 
-          echo "</ul>" >> tmp-index/index.html
-          mv tmp-index/index.html index.html
+          echo "<footer>Last updated: $(date -u '+%b %d %Y — %H:%M:%S UTC')</footer>" >> "$INDEX_FILE"
+          echo "</body></html>" >> "$INDEX_FILE"
+
+          mv "$INDEX_FILE" ./index.html
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Update Allure index" || echo "No changes to commit"
+          git commit -m "Update Allure index UI" || echo "No changes to commit"
           git push origin gh-pages
 
       # --- Send Email Summary ---
