@@ -32,7 +32,7 @@ jobs:
         run: npx playwright test tests/smoke || true
 
         # Verify that JSON report exists
-        run: ls -lh json-report.json || echo "⚠️ json-report.json not found"
+        ls -lh json-report.json || echo "⚠️ json-report.json not found"
 
       - name: Parse JSON test results
         id: parse_results
