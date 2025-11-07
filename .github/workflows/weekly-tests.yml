@@ -36,14 +36,25 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           mkdir -p reports
+          # JSON reporter creates test-results.json in current directory
           npx playwright test tests/smoke --reporter=github,json --output=reports || true
+          # Copy JSON report to reports directory if it exists in root
+          if [ -f "test-results.json" ]; then
+            cp test-results.json reports/test-results.json || true
+          fi
 
       - name: Generate HTML summary table
         id: mini_report
         run: |
-          report_file="reports/test-results.json"
-          if [ ! -f "$report_file" ]; then
-            report_file=$(find reports -name "*.json" | head -n 1 || echo "")
+          # Find the JSON report file - Playwright JSON reporter creates test-results.json
+          report_file=""
+          if [ -f "reports/test-results.json" ]; then
+            report_file="reports/test-results.json"
+          elif [ -f "test-results.json" ]; then
+            report_file="test-results.json"
+          else
+            # Search for any JSON file in reports directory or subdirectories
+            report_file=$(find reports -type f -name "*.json" 2>/dev/null | head -n 1 || echo "")
           fi
 
           if [ -z "$report_file" ] || [ ! -s "$report_file" ]; then
@@ -55,22 +66,56 @@ jobs:
             echo "<h3>Playwright Test Summary</h3>" > summary.html
             echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;min-width:400px;'><tr style='background:#f0f0f0;'><th>Test Name</th><th>Status</th></tr>" >> summary.html
 
-            # Extract rows from Playwright 1.55 JSON structure:
-            # suites[].suites[].specs[] -> tests[0].results[-1].status
+            # Extract all test specs with their status - handle nested suites structure
+            # Recursively extract all specs from suites
             jq -r '
-              .suites[]
-              | .suites[]
-              | .specs[]
-              | {title: .title, status: (.tests[0].results[-1].status // "unknown")}
-              | "<tr style=\"background:" + (if .status=="failed" then "#ffe5e5" else "white" end) + ";\"><td>\(.title)</td><td style=\"color:" + (if .status=="passed" then "green" elif .status=="failed" then "red" else "black" end) + ";font-weight:bold;\">\(.status)</td></tr>"
-            ' "$report_file" >> summary.html || true
+              def get_all_specs:
+                (if .specs then .specs[] else empty end),
+                (if .suites then .suites[] | get_all_specs else empty end);
+              
+              .suites[] | get_all_specs
+              | select(.tests != null and (.tests | length) > 0)
+              | .tests[0].results[-1].status as $status
+              | "<tr style=\"background:" + (if $status=="failed" then "#ffe5e5" else "white" end) + ";\"><td>\(.title)</td><td style=\"color:" + (if $status=="passed" then "green" elif $status=="failed" then "red" else "black" end) + ";font-weight:bold;\">\($status // "unknown")</td></tr>"
+            ' "$report_file" >> summary.html 2>/dev/null || true
 
             echo "</table>" >> summary.html
 
-            # Accurate counts based on the last result per spec
-            passed=$(jq '[.suites[].suites[].specs[] | .tests[0].results[-1].status] | map(select(.=="passed")) | length' "$report_file" || echo 0)
-            failed=$(jq '[.suites[].suites[].specs[] | .tests[0].results[-1].status] | map(select(.=="failed")) | length' "$report_file" || echo 0)
-            total=$(jq '[.suites[].suites[].specs[]] | length' "$report_file" || echo 0)
+            # Count passed, failed, and total tests
+            # Extract all test statuses recursively using the same function
+            passed=$(jq -r '
+              def get_all_specs:
+                (if .specs then .specs[] else empty end),
+                (if .suites then .suites[] | get_all_specs else empty end);
+              
+              [.suites[] | get_all_specs | select(.tests != null and (.tests | length) > 0) | .tests[0].results[-1].status // "unknown"]
+              | map(select(.=="passed"))
+              | length
+            ' "$report_file" 2>/dev/null || echo "0")
+            
+            failed=$(jq -r '
+              def get_all_specs:
+                (if .specs then .specs[] else empty end),
+                (if .suites then .suites[] | get_all_specs else empty end);
+              
+              [.suites[] | get_all_specs | select(.tests != null and (.tests | length) > 0) | .tests[0].results[-1].status // "unknown"]
+              | map(select(.=="failed"))
+              | length
+            ' "$report_file" 2>/dev/null || echo "0")
+            
+            total=$(jq -r '
+              def get_all_specs:
+                (if .specs then .specs[] else empty end),
+                (if .suites then .suites[] | get_all_specs else empty end);
+              
+              [.suites[] | get_all_specs | select(.tests != null and (.tests | length) > 0)]
+              | length
+            ' "$report_file" 2>/dev/null || echo "0")
+            
+            # Ensure we have numeric values
+            passed=${passed:-0}
+            failed=${failed:-0}
+            total=${total:-0}
           fi
 
           {
