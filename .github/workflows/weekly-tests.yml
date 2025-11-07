@@ -12,55 +12,58 @@ jobs:
     container: mcr.microsoft.com/playwright:v1.55.0-jammy
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Playwright tests
+      - name: Run Playwright tests (JSON reporter)
         id: run_tests
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: npx playwright test --reporter=html || true
+        run: npx playwright test --reporter=json > results.json || true
 
-      - name: Parse HTML report summary
+      - name: Parse JSON test results
         id: parse_results
         run: |
           node - <<'EOF'
           import fs from 'fs';
+          const out = process.env.GITHUB_OUTPUT;
           let passed=0, failed=0, total=0;
-          const file='playwright-report/data.json';
-          if (fs.existsSync(file)) {
-            const data=JSON.parse(fs.readFileSync(file,'utf8'));
-            const count=(s)=>{
-              s.specs?.forEach(sp=>{
-                const st=sp.tests?.[0]?.results?.at(-1)?.status;
-                if(st){total++; if(st==='passed')passed++; if(st==='failed')failed++;}
-              });
-              s.suites?.forEach(count);
-            };
-            data.suites?.forEach(count);
-          } else {
-            console.log('No report data.json found');
+
+          if (!fs.existsSync('results.json')) {
+            console.log('⚠️ No results.json found');
+            fs.appendFileSync(out, `passed=0\nfailed=0\ntotal=0\n`);
+            process.exit(0);
           }
-          console.log(`Total: ${total}, Passed: ${passed}, Failed: ${failed}`);
-          console.log(`passed=${passed}`);
-          console.log(`failed=${failed}`);
-          console.log(`total=${total}`);
-          fs.appendFileSync(process.env.GITHUB_OUTPUT,`passed=${passed}\nfailed=${failed}\ntotal=${total}\n`);
+
+          const data = JSON.parse(fs.readFileSync('results.json','utf8'));
+          const walk = (suite) => {
+            (suite.specs || []).forEach(spec => {
+              (spec.tests || []).forEach(test => {
+                const status = test?.outcome || test?.results?.at(-1)?.status;
+                if (status) {
+                  total++;
+                  if (status === 'expected' || status === 'passed') passed++;
+                  else if (status === 'unexpected' || status === 'failed') failed++;
+                }
+              });
+            });
+            (suite.suites || []).forEach(walk);
+          };
+          (data.suites || []).forEach(walk);
+
+          console.log(`✅ Total: ${total}, Passed: ${passed}, Failed: ${failed}`);
+          fs.appendFileSync(out, `passed=${passed}\nfailed=${failed}\ntotal=${total}\n`);
           EOF
-        outputs:
-          passed: ${{ steps.parse_results.outputs.passed }}
-          failed: ${{ steps.parse_results.outputs.failed }}
-          total: ${{ steps.parse_results.outputs.total }}
 
       - name: Send summary email
         if: always()
@@ -76,9 +79,21 @@ jobs:
           html_body: |
             <h3>Playwright Test Results</h3>
             <table border="1" cellpadding="10" style="border-collapse:collapse;font-family:Arial,sans-serif;">
-              <tr><th>Metric</th><th>Count</th></tr>
-              <tr><td><b>Total</b></td><td>${{ steps.parse_results.outputs.total }}</td></tr>
-              <tr><td><b>Passed</b></td><td style="color:green;"><b>${{ steps.parse_results.outputs.passed }}</b></td></tr>
-              <tr><td><b>Failed</b></td><td style="color:red;"><b>${{ steps.parse_results.outputs.failed }}</b></td></tr>
+              <tr style="background:#f0f0f0;">
+                <th>Metric</th><th>Count</th>
+              </tr>
+              <tr>
+                <td><b>Total</b></td>
+                <td>${{ steps.parse_results.outputs.total }}</td>
+              </tr>
+              <tr style="background:#e8f5e9;">
+                <td><b>Passed</b></td>
+                <td style="color:green;font-weight:bold;">${{ steps.parse_results.outputs.passed }}</td>
+              </tr>
+              <tr style="background:#ffebee;">
+                <td><b>Failed</b></td>
+                <td style="color:red;font-weight:bold;">${{ steps.parse_results.outputs.failed }}</td>
+              </tr>
             </table>
-            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View full logs</a></p>
+            <br/>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Full Run</a></p>
