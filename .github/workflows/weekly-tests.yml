@@ -1,4 +1,4 @@
-name: Playwright Weekly CI Tests (Email Summary)
+name: Playwright Weekly CI Tests (Email Summary + GitHub Pages)
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Playwright tests (JSON reporter)
+      - name: Run Playwright tests
         id: run_tests
         continue-on-error: true
         env:
@@ -65,8 +65,22 @@ jobs:
           (data.suites || []).forEach(collect);
 
           const htmlTable = rows || '<tr><td colspan="2">No tests found</td></tr>';
-          fs.appendFileSync(out, `passed=${passed}\nfailed=${failed}\ntotal=${total}\nhtml_rows<<EOF\n${htmlTable}\nEOF\n`);
+          fs.appendFileSync(out, `passed=${passed}\nfailed=${failed}\ntotal=${total}\n`);
+          fs.appendFileSync(out, `html_rows<<EOF\n${htmlTable}\nEOF\n`);
           EOF
+
+      # 🆕 Step: Deploy Playwright HTML report to GitHub Pages
+      - name: Deploy Playwright report to GitHub Pages
+        if: always()
+        run: echo "REPORT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      
+      - name: Publish report
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: playwright-report
+          destination_dir: reports/${{ env.REPORT_DATE }}
 
       - name: Send summary email
         if: always()
@@ -79,7 +93,6 @@ jobs:
           subject: "Playwright CI Report - ${{ steps.parse_results.outputs.passed }} Passed / ${{ steps.parse_results.outputs.failed }} Failed"
           to: ${{ secrets.REPORT_RECIPIENT }}
           from: "Playwright CI <${{ secrets.SMTP_USER }}>"
-          attachments: playwright-report/index.html
           html_body: |
             <h3>Playwright Test Results Summary</h3>
             <table border="1" cellpadding="10" style="border-collapse:collapse;font-family:Arial,sans-serif;">
@@ -95,4 +108,4 @@ jobs:
               ${{ steps.parse_results.outputs.html_rows }}
             </table>
             <br/>
-            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Full Run in GitHub Actions</a></p>
+            <p>📊 <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ env.REPORT_DATE }}/index.html">View Full Playwright Report</a></p>
