@@ -31,8 +31,23 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           mkdir -p reports
-          # JSON reporter creates test-results.json in current directory
-          npx playwright test tests/smoke --reporter=github,json --output=reports || true
+          # Run tests with JSON reporter - it should create test-results.json
+          # The JSON reporter creates the file in the current directory by default
+          npx playwright test tests/smoke --reporter=github --reporter=json --output=reports || true
+          
+          # Move JSON file to reports directory if it was created in root
+          if [ -f "test-results.json" ]; then
+            echo "Found test-results.json in root, moving to reports/"
+            mv test-results.json reports/test-results.json || true
+          fi
+          
+          # Debug: List all files to see what was created
+          echo "=== Files in current directory ==="
+          ls -la . | head -20 || true
+          echo "=== Files in reports directory ==="
+          ls -la reports/ 2>/dev/null | head -20 || echo "reports directory not found"
+          echo "=== Searching for JSON files ==="
+          find . -name "*.json" -type f 2>/dev/null | head -10 || true
 
       - name: Generate HTML summary table
         id: mini_report
@@ -41,8 +56,13 @@ jobs:
           import fs from 'fs';
           import path from 'path';
           
-          // Find the JSON report file
+          // Debug: List current directory
+          console.log('Current working directory:', process.cwd());
+          
+          // Find the JSON report file - search more thoroughly
           let reportFile = null;
+          
+          // First, try common locations
           const possiblePaths = [
             'test-results.json',
             'reports/test-results.json',
@@ -50,35 +70,51 @@ jobs:
             path.join(process.cwd(), 'reports', 'test-results.json')
           ];
           
-          // Also search in current directory and reports directory
+          console.log('Checking possible paths...');
           for (const filePath of possiblePaths) {
             try {
-              if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
-                reportFile = filePath;
-                break;
+              if (fs.existsSync(filePath)) {
+                const stat = fs.statSync(filePath);
+                console.log(`Found: ${filePath} (size: ${stat.size})`);
+                if (stat.size > 0) {
+                  reportFile = filePath;
+                  break;
+                }
+              } else {
+                console.log(`Not found: ${filePath}`);
               }
             } catch (e) {
-              // Continue searching
+              console.log(`Error checking ${filePath}: ${e.message}`);
             }
           }
           
-          // If not found, search recursively
+          // If not found, search recursively for any JSON file
           if (!reportFile) {
-            function findJsonFile(dir) {
+            console.log('Searching recursively for JSON files...');
+            function findJsonFile(dir, maxDepth = 5, currentDepth = 0) {
+              if (currentDepth > maxDepth) return null;
               try {
                 const files = fs.readdirSync(dir);
                 for (const file of files) {
                   const filePath = path.join(dir, file);
-                  const stat = fs.statSync(filePath);
-                  if (stat.isDirectory()) {
-                    const found = findJsonFile(filePath);
-                    if (found) return found;
-                  } else if (file === 'test-results.json' && stat.size > 0) {
-                    return filePath;
+                  try {
+                    const stat = fs.statSync(filePath);
+                    if (stat.isDirectory()) {
+                      const found = findJsonFile(filePath, maxDepth, currentDepth + 1);
+                      if (found) return found;
+                    } else if (file.endsWith('.json') && stat.size > 0) {
+                      console.log(`Found JSON file: ${filePath} (size: ${stat.size})`);
+                      // Prefer test-results.json, but accept any JSON
+                      if (file === 'test-results.json' || !reportFile) {
+                        return filePath;
+                      }
+                    }
+                  } catch (e) {
+                    // Skip files we can't access
                   }
                 }
               } catch (e) {
-                // Ignore errors
+                // Ignore directory errors
               }
               return null;
             }
