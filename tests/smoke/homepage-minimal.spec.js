@@ -34,6 +34,4 @@ test.describe('Homepage Smoke Tests', () => {
         await allure.tag('smoke');
         await home.verifyFooterLinks();
     });
-
-
 });

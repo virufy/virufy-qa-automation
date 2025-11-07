@@ -7,7 +7,8 @@ export class AdvisorsPage extends BasePage {
         super(page);
 
         this.selectors = { 
-            advisorImage: 'img[alt]',
+            // advisorImage: 'img[alt]',
+            advisorImage: 'img[src*="/advisors/"]',
             advisorName: 'h3, h2, [class*="text-black font-bold "]',
             linkedInLink: 'a[href*="https://www.linkedin.com/in/"]',
 
@@ -44,32 +45,52 @@ export class AdvisorsPage extends BasePage {
 
 
     async verifyAdvisorsLinkAndImages() {
-        console.log('🔍 Starting LinkedIn URL verification for all advisors...');
+        console.log('🔍 Starting Advisor Image and LinkedIn URL verification for all advisors...');
 
-        //Get LinkedIn URL's
+        //Check all advisor images
+        const advisorImages = await this.page.locator(this.selectors.advisorImage);
         const linkedInURLs = await this.page.locator(this.selectors.linkedInLink);
-        const linkCount = await linkedInURLs.count();
 
-        console.log(`Found ${linkCount} LinkedIn URLs.`);
+        const imageCount = await advisorImages.count();
+        const linkCount = await linkedInURLs.count();
+        
+        console.log(`Found ${imageCount} advisor images.`);
+
+        if (imageCount === 0) {
+            console.warn('⚠️ No advisor images found on the advisors page.');
+        } else {
+            for (let i = 0; i < imageCount; i++) {
+                const image = advisorImages.nth(i);
+                const altText = await image.getAttribute('alt');
+                const src = await image.getAttribute('src');
+                if (altText && altText.trim() !== '') {
+                    await expect(image).toBeVisible();
+                    console.log(`✅ Image "${altText} : ${src}" is visible.`);   
+
+                }   else {
+                    console.warn(`⚠️ Image ${i + 1} is missing alt text.`);
+                }
+            }
+        }
+
+        //Get Advisor Images and  LinkedIn URL's
+        
+        console.log(`\nFound ${linkCount} LinkedIn URLs.`);
 
         if (linkCount === 0) {
             console.warn('⚠️ No LinkedIn URLs found on the advisors page.');
             return;
         }
         
-
         const hrefs = [];
         for (let i = 0; i < linkCount; i++) {
+        
             const link = linkedInURLs.nth(i);
-            const href = await link.getAttribute('href');
-            if (href) {
-                hrefs.push(href);
-            }
-        }
-
-        console.log('✅ Collected LinkedIn URLs:', hrefs);
+            const hrefA = await link.getAttribute('href');
 
           // Validate that each link is properly formatted
+          hrefs.push(hrefA);
+        }
 
          for (const href of hrefs) {
             console.log(`🔗 Checking LinkedIn link: ${href}`);
@@ -82,6 +103,7 @@ export class AdvisorsPage extends BasePage {
             }
 
         }
+        
     }  
     
     async verifyFooterLinks() {
@@ -91,5 +113,3 @@ export class AdvisorsPage extends BasePage {
         await this.assertElementVisible(this.selectors.doNotSellInfo);
     }
 }
-
-

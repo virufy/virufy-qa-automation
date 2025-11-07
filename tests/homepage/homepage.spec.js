@@ -48,5 +48,4 @@ test.describe('Homepage Validation', () => {
         await allure.tag('homepage');
         await home.verifyFooterLinks();
     });  
-
 });
