@@ -1,4 +1,4 @@
-name: Playwright Weekly Tests (Email Report Integration)
+name: Playwright Weekly CI Tests (Email Summary)
 
 on:
   workflow_dispatch:
@@ -55,23 +55,22 @@ jobs:
             echo "<h3>Playwright Test Summary</h3>" > summary.html
             echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;min-width:400px;'><tr style='background:#f0f0f0;'><th>Test Name</th><th>Status</th></tr>" >> summary.html
 
-            # Extract test titles + statuses for Playwright 1.55 format
+            # Extract rows from Playwright 1.55 JSON structure:
+            # suites[].suites[].specs[] -> tests[0].results[-1].status
             jq -r '
-              [ .. | objects
-                | select(has("specs"))
-                | .specs[]
-                | {title: .title, status: (.tests[].results[].status // "unknown")}
-              ]
-              | unique_by(.title)
-              | .[]
+              .suites[]
+              | .suites[]
+              | .specs[]
+              | {title: .title, status: (.tests[0].results[-1].status // "unknown")}
               | "<tr style=\"background:" + (if .status=="failed" then "#ffe5e5" else "white" end) + ";\"><td>\(.title)</td><td style=\"color:" + (if .status=="passed" then "green" elif .status=="failed" then "red" else "black" end) + ";font-weight:bold;\">\(.status)</td></tr>"
             ' "$report_file" >> summary.html || true
 
             echo "</table>" >> summary.html
 
-            passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
-            failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
-            total=$((passed+failed))
+            # Accurate counts based on the last result per spec
+            passed=$(jq '[.suites[].suites[].specs[] | .tests[0].results[-1].status] | map(select(.=="passed")) | length' "$report_file" || echo 0)
+            failed=$(jq '[.suites[].suites[].specs[] | .tests[0].results[-1].status] | map(select(.=="failed")) | length' "$report_file" || echo 0)
+            total=$(jq '[.suites[].suites[].specs[]] | length' "$report_file" || echo 0)
           fi
 
           {
