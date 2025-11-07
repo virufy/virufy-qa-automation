@@ -24,187 +24,90 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Playwright tests (JSON reporter)
+      - name: Run Playwright tests
         id: run_tests
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
-          mkdir -p reports
-          # Run tests with JSON reporter - it should create test-results.json
-          # The JSON reporter creates the file in the current directory by default
-          npx playwright test tests/smoke --reporter=github --reporter=json --output=reports || true
-          
-          # Move JSON file to reports directory if it was created in root
-          if [ -f "test-results.json" ]; then
-            echo "Found test-results.json in root, moving to reports/"
-            mv test-results.json reports/test-results.json || true
-          fi
-          
-          # Debug: List all files to see what was created
-          echo "=== Files in current directory ==="
-          ls -la . | head -20 || true
-          echo "=== Files in reports directory ==="
-          ls -la reports/ 2>/dev/null | head -20 || echo "reports directory not found"
-          echo "=== Searching for JSON files ==="
-          find . -name "*.json" -type f 2>/dev/null | head -10 || true
+          # Run tests - HTML reporter is already configured in playwright.config.js
+          npx playwright test tests/smoke || true
 
-      - name: Generate HTML summary table
-        id: mini_report
+      - name: Parse HTML report data
+        id: parse_results
         run: |
-          cat > parse-report.mjs << 'SCRIPT'
+          cat > parse-results.mjs << 'EOF'
           import fs from 'fs';
           import path from 'path';
           
-          // Debug: List current directory
-          console.log('Current working directory:', process.cwd());
+          let passed = 0, failed = 0, total = 0;
+          let dataFile = null;
           
-          // Find the JSON report file - search more thoroughly
-          let reportFile = null;
-          
-          // First, try common locations
+          // Playwright HTML report stores data in playwright-report/data.json
           const possiblePaths = [
-            'test-results.json',
-            'reports/test-results.json',
-            path.join(process.cwd(), 'test-results.json'),
-            path.join(process.cwd(), 'reports', 'test-results.json')
+            'playwright-report/data.json',
+            path.join(process.cwd(), 'playwright-report', 'data.json')
           ];
           
-          console.log('Checking possible paths...');
+          // Also check for alternative locations
           for (const filePath of possiblePaths) {
-            try {
-              if (fs.existsSync(filePath)) {
-                const stat = fs.statSync(filePath);
-                console.log(`Found: ${filePath} (size: ${stat.size})`);
-                if (stat.size > 0) {
-                  reportFile = filePath;
-                  break;
-                }
-              } else {
-                console.log(`Not found: ${filePath}`);
-              }
-            } catch (e) {
-              console.log(`Error checking ${filePath}: ${e.message}`);
+            if (fs.existsSync(filePath)) {
+              dataFile = filePath;
+              console.log(`Found HTML report data at: ${filePath}`);
+              break;
             }
           }
           
-          // If not found, search recursively for any JSON file
-          if (!reportFile) {
-            console.log('Searching recursively for JSON files...');
-            function findJsonFile(dir, maxDepth = 5, currentDepth = 0) {
-              if (currentDepth > maxDepth) return null;
-              try {
-                const files = fs.readdirSync(dir);
-                for (const file of files) {
-                  const filePath = path.join(dir, file);
-                  try {
-                    const stat = fs.statSync(filePath);
-                    if (stat.isDirectory()) {
-                      const found = findJsonFile(filePath, maxDepth, currentDepth + 1);
-                      if (found) return found;
-                    } else if (file.endsWith('.json') && stat.size > 0) {
-                      console.log(`Found JSON file: ${filePath} (size: ${stat.size})`);
-                      // Prefer test-results.json, but accept any JSON
-                      if (file === 'test-results.json' || !reportFile) {
-                        return filePath;
+          if (dataFile) {
+            try {
+              const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+              
+              // Recursive function to count tests from suites
+              function countTests(suite) {
+                if (suite.specs && Array.isArray(suite.specs)) {
+                  suite.specs.forEach(spec => {
+                    if (spec.tests && Array.isArray(spec.tests) && spec.tests.length > 0) {
+                      const test = spec.tests[0];
+                      if (test.results && Array.isArray(test.results) && test.results.length > 0) {
+                        const status = test.results[test.results.length - 1].status;
+                        if (status) {
+                          total++;
+                          if (status === 'passed') passed++;
+                          if (status === 'failed') failed++;
+                        }
                       }
                     }
-                  } catch (e) {
-                    // Skip files we can't access
-                  }
-                }
-              } catch (e) {
-                // Ignore directory errors
-              }
-              return null;
-            }
-            reportFile = findJsonFile('.') || findJsonFile('reports');
-          }
-          
-          let passed = 0;
-          let failed = 0;
-          let total = 0;
-          let htmlTable = '';
-          
-          if (!reportFile) {
-            console.log('No JSON report file found');
-            htmlTable = '<p>No JSON report found or tests did not run.</p>';
-          } else {
-            console.log(`Found report file: ${reportFile}`);
-            try {
-              const reportData = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
-              
-              // Recursive function to extract all test specs
-              function getAllSpecs(suite) {
-                const specs = [];
-                if (suite.specs && Array.isArray(suite.specs)) {
-                  specs.push(...suite.specs);
+                  });
                 }
                 if (suite.suites && Array.isArray(suite.suites)) {
-                  for (const subSuite of suite.suites) {
-                    specs.push(...getAllSpecs(subSuite));
-                  }
-                }
-                return specs;
-              }
-              
-              // Extract all specs from all suites
-              const allSpecs = [];
-              if (reportData.suites && Array.isArray(reportData.suites)) {
-                for (const suite of reportData.suites) {
-                  allSpecs.push(...getAllSpecs(suite));
+                  suite.suites.forEach(countTests);
                 }
               }
               
-              console.log(`Found ${allSpecs.length} test specs`);
-              
-              // Build HTML table and count tests
-              htmlTable = '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;min-width:400px;">';
-              htmlTable += '<tr style="background:#f0f0f0;"><th>Test Name</th><th>Status</th></tr>';
-              
-              for (const spec of allSpecs) {
-                if (spec.tests && spec.tests.length > 0) {
-                  const test = spec.tests[0];
-                  if (test.results && test.results.length > 0) {
-                    const status = test.results[test.results.length - 1].status || 'unknown';
-                    const testName = spec.title || 'Unknown Test';
-                    
-                    const bgColor = status === 'failed' ? '#ffe5e5' : 'white';
-                    const textColor = status === 'passed' ? 'green' : status === 'failed' ? 'red' : 'black';
-                    
-                    htmlTable += `<tr style="background:${bgColor};"><td>${testName}</td><td style="color:${textColor};font-weight:bold;">${status}</td></tr>`;
-                    
-                    total++;
-                    if (status === 'passed') passed++;
-                    if (status === 'failed') failed++;
-                  }
-                }
+              if (data.suites && Array.isArray(data.suites)) {
+                data.suites.forEach(countTests);
               }
-              
-              htmlTable += '</table>';
             } catch (error) {
-              console.error(`Error parsing JSON: ${error.message}`);
-              htmlTable = `<p>Error parsing JSON report: ${error.message}</p>`;
+              console.error(`Error parsing HTML report data: ${error.message}`);
+            }
+          } else {
+            console.log('HTML report data file not found. Checking playwright-report directory...');
+            if (fs.existsSync('playwright-report')) {
+              const files = fs.readdirSync('playwright-report');
+              console.log('Files in playwright-report:', files);
             }
           }
           
-          // Write outputs
-          const outputFile = 'summary.html';
-          fs.writeFileSync(outputFile, htmlTable);
-          
-          // Output to GitHub Actions
-          const githubOutput = process.env.GITHUB_OUTPUT;
-          if (githubOutput) {
-            const content = fs.readFileSync(outputFile, 'utf8');
-            fs.appendFileSync(githubOutput, `html<<EOF\n${content}\nEOF\n`);
-            fs.appendFileSync(githubOutput, `passed=${passed}\n`);
-            fs.appendFileSync(githubOutput, `failed=${failed}\n`);
-            fs.appendFileSync(githubOutput, `total=${total}\n`);
+          const output = process.env.GITHUB_OUTPUT;
+          if (output) {
+            fs.appendFileSync(output, `passed=${passed}\n`);
+            fs.appendFileSync(output, `failed=${failed}\n`);
+            fs.appendFileSync(output, `total=${total}\n`);
           }
-          
           console.log(`Total: ${total}, Passed: ${passed}, Failed: ${failed}`);
-          SCRIPT
-          node parse-report.mjs
+          EOF
+          
+          node parse-results.mjs
 
       - name: Send summary email
         if: always()
@@ -214,31 +117,28 @@ jobs:
           server_port: 465
           username: ${{ secrets.SMTP_USER }}
           password: ${{ secrets.SMTP_PASS }}
-          subject: "Weekly Playwright CI Report - ${{ steps.mini_report.outputs.passed }} Passed / ${{ steps.mini_report.outputs.failed }} Failed"
+          subject: "Playwright CI Report - ${{ steps.parse_results.outputs.passed }} Passed / ${{ steps.parse_results.outputs.failed }} Failed"
           to: ${{ secrets.REPORT_RECIPIENT }}
           from: "Playwright CI <${{ secrets.SMTP_USER }}>"
           html_body: |
-            <h3>Playwright CI Test Summary</h3>
-            <table border="1" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;margin:20px 0;">
+            <h3>Playwright Test Results</h3>
+            <table border="1" cellpadding="10" style="border-collapse:collapse;font-family:Arial,sans-serif;">
               <tr style="background:#f0f0f0;">
-                <th style="padding:10px;text-align:left;">Metric</th>
-                <th style="padding:10px;text-align:left;">Count</th>
+                <th style="padding:10px;">Metric</th>
+                <th style="padding:10px;">Count</th>
               </tr>
               <tr>
                 <td style="padding:10px;"><strong>Total Tests</strong></td>
-                <td style="padding:10px;">${{ steps.mini_report.outputs.total }}</td>
+                <td style="padding:10px;">${{ steps.parse_results.outputs.total }}</td>
               </tr>
               <tr style="background:#e8f5e9;">
                 <td style="padding:10px;"><strong>Passed</strong></td>
-                <td style="padding:10px;color:green;font-weight:bold;">${{ steps.mini_report.outputs.passed }}</td>
+                <td style="padding:10px;color:green;font-weight:bold;">${{ steps.parse_results.outputs.passed }}</td>
               </tr>
               <tr style="background:#ffebee;">
                 <td style="padding:10px;"><strong>Failed</strong></td>
-                <td style="padding:10px;color:red;font-weight:bold;">${{ steps.mini_report.outputs.failed }}</td>
+                <td style="padding:10px;color:red;font-weight:bold;">${{ steps.parse_results.outputs.failed }}</td>
               </tr>
             </table>
             <br/>
-            <h4>Test Details:</h4>
-            ${{ steps.mini_report.outputs.html }}
-            <br/>
-            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Full GitHub Actions Run</a></p>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Full Run</a></p>
