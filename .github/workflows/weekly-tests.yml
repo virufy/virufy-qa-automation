@@ -29,10 +29,7 @@ jobs:
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: |
-          npx playwright test tests/smoke || true
-        # Verify that JSON report exists
-          ls -lh json-report.json || echo "⚠️ json-report.json not found"
+        run: npx playwright test tests/smoke || true
 
       - name: Parse JSON test results
         id: parse_results
