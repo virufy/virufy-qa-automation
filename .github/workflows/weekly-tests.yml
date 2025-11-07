@@ -1,109 +1,44 @@
-name: Playwright Weekly CI Tests (Email Summary)
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 8 * * 1"   # Every Monday 8 AM UTC
-  push:
-
-jobs:
-  run-playwright:
-    runs-on: ubuntu-latest
-    container: mcr.microsoft.com/playwright:v1.55.0-jammy
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install jq
+      - name: Generate HTML summary table
+        id: mini_report
         run: |
-          apt-get update
-          apt-get install -y jq
+          report_file="reports/test-results.json"
+          if [ ! -f "$report_file" ]; then
+            report_file=$(find reports -name "*.json" | head -n 1 || echo "")
+          fi
 
-      - name: Run Playwright tests (JSON reporter)
-        id: run_tests
-        continue-on-error: true
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-        run: |
-          mkdir -p reports
-          npx playwright test tests/smoke --reporter=github,json --output=reports || true
+          if [ -z "$report_file" ] || [ ! -s "$report_file" ]; then
+            echo "<p>No JSON report found or tests did not run.</p>" > summary.html
+            passed=0
+            failed=0
+            total=0
+          else
+            echo "<h3>Playwright Test Summary</h3>" > summary.html
+            echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;'><tr style='background:#f0f0f0;'><th>Test Name</th><th>Status</th></tr>" >> summary.html
 
-        
-        - name: Generate HTML summary table
-          id: mini_report
-          run: |
-            report_file="reports/test-results.json"
-            if [ ! -f "$report_file" ]; then
-              report_file=$(find reports -name "*.json" | head -n 1 || echo "")
-            fi
+            # ✅ Correct extraction for Playwright 1.55 JSON format
+            jq -r '
+              [ .. | objects
+                | select(has("specs"))
+                | .specs[]
+                | {title: .title, status: (.tests[].results[].status // "unknown")}
+              ]
+              | unique_by(.title)
+              | .[]
+              | "<tr><td>\(.title)</td><td style=\"color:" + (if .status=="passed" then "green" elif .status=="failed" then "red" else "black" end) + ";\">\(.status)</td></tr>"
+            ' "$report_file" >> summary.html || true
 
-            if [ -z "$report_file" ] || [ ! -s "$report_file" ]; then
-              echo "<p>No JSON report found or tests did not run.</p>" > summary.html
-              passed=0
-              failed=0
-              total=0
-            else
-              echo "<h3>Playwright Test Summary</h3>" > summary.html
-              echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;'><tr style='background:#f0f0f0;'><th>Test Name</th><th>Status</th></tr>" >> summary.html
+            echo "</table>" >> summary.html
 
-              # ✅ Correct extraction for Playwright 1.55 JSON format
-              jq -r '
-                [ .. | objects
-                  | select(has("specs"))
-                  | .specs[]
-                  | {title: .title, status: (.tests[].results[].status // "unknown")}
-                ]
-                | unique_by(.title)
-                | .[]
-                | "<tr><td>\(.title)</td><td style=\"color:" + (if .status=="passed" then "green" elif .status=="failed" then "red" else "black" end) + ";\">\(.status)</td></tr>"
-              ' "$report_file" >> summary.html || true
+            passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
+            failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
+            total=$((passed+failed))
+          fi
 
-              echo "</table>" >> summary.html
-
-              passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
-              failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
-              total=$((passed+failed))
-            fi
-
-            {
-              echo "html<<EOF"
-              cat summary.html
-              echo "EOF"
-              echo "passed=$passed"
-              echo "failed=$failed"
-              echo "total=$total"
-            } >> $GITHUB_OUTPUT
-
-
-      - name: Send summary email
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.SMTP_USER }}
-          password: ${{ secrets.SMTP_PASS }}
-          subject: "Weekly Playwright CI Report - ${{ steps.mini_report.outputs.passed }} Passed / ${{ steps.mini_report.outputs.failed }} Failed"
-          to: ${{ secrets.REPORT_RECIPIENT }}
-          from: "Playwright CI <${{ secrets.SMTP_USER }}>"
-          html_body: |
-            <h3>Playwright CI Test Summary</h3>
-            <p>Total: ${{ steps.mini_report.outputs.total }}</p>
-            <p>Passed: ${{ steps.mini_report.outputs.passed }}</p>
-            <p>Failed: ${{ steps.mini_report.outputs.failed }}</p>
-            <br/>
-            <p>Detailed test summary:</p>
-            ${{ steps.mini_report.outputs.html }}
-            <br/>
-            <p>Full logs and artifacts:</p>
-            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View GitHub Actions Run</a></p>
+          {
+            echo "html<<EOF"
+            cat summary.html
+            echo "EOF"
+            echo "passed=$passed"
+            echo "failed=$failed"
+            echo "total=$total"
+          } >> $GITHUB_OUTPUT
