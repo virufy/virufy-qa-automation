@@ -36,14 +36,14 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           mkdir -p reports
-          # Run with both GitHub and JSON reporters; output JSON to ./reports
+          # Run Playwright with both GitHub and JSON reporters, output JSON to ./reports
           npx playwright test tests/smoke --reporter=github,json --output=reports || true
 
-        
-        - name: Generate HTML summary table
+      - name: Generate HTML summary table
         id: mini_report
         run: |
           report_file="reports/test-results.json"
+          # fallback to default JSON name if different Playwright version
           if [ ! -f "$report_file" ]; then
             report_file=$(find reports -name "*.json" | head -n 1 || echo "")
           fi
@@ -55,9 +55,9 @@ jobs:
             total=0
           else
             echo "<h3>Playwright Test Summary</h3>" > summary.html
-            echo "<table border='1' cellpadding='6' cellspacing='0'><tr><th>Test Name</th><th>Status</th></tr>" >> summary.html
+            echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;'><tr style='background:#f0f0f0;'><th>Test Name</th><th>Status</th></tr>" >> summary.html
 
-            # ✅ robust recursive jq filter that matches Playwright 1.55 structure
+            # Parse all test titles + statuses (supports nested Playwright 1.55 schema)
             jq -r '
               [ .. | objects
                 | select(has("title") and has("tests"))
@@ -65,44 +65,9 @@ jobs:
               ]
               | unique_by(.title)
               | .[]
-              | "<tr><td>\(.title)</td><td>\(.status)</td></tr>"
+              | "<tr><td>\(.title)</td><td style=\"color:" + (if .status=="passed" then "green" elif .status=="failed" then "red" else "black" end) + ";\">\(.status)</td></tr>"
             ' "$report_file" >> summary.html || true
 
             echo "</table>" >> summary.html
 
-            # ✅ count totals regardless of depth
-            passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
-            failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
-            total=$((passed+failed))
-          fi
-
-          echo "html<<EOF" >> $GITHUB_OUTPUT
-          cat summary.html >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "passed=$passed" >> $GITHUB_OUTPUT
-          echo "failed=$failed" >> $GITHUB_OUTPUT
-          echo "total=$total" >> $GITHUB_OUTPUT
-
-
-      - name: Send summary email
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.SMTP_USER }}
-          password: ${{ secrets.SMTP_PASS }}
-          subject: "Weekly Playwright CI Report - ${{ steps.mini_report.outputs.passed }} Passed / ${{ steps.mini_report.outputs.failed }} Failed"
-          to: ${{ secrets.REPORT_RECIPIENT }}
-          from: "Playwright CI <${{ secrets.SMTP_USER }}>"
-          html_body: |
-            <h3>Playwright CI Test Summary</h3>
-            <p>Total: ${{ steps.mini_report.outputs.total }}</p>
-            <p>Passed: ${{ steps.mini_report.outputs.passed }}</p>
-            <p>Failed: ${{ steps.mini_report.outputs.failed }}</p>
-            <br/>
-            <p>Detailed test summary:</p>
-            ${{ steps.mini_report.outputs.html }}
-            <br/>
-            <p>Full logs and artifacts:</p>
-            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View GitHub Actions Run</a></p>
+            passed=$(jq '[.. | .status?] | map(select(.=="passed")
