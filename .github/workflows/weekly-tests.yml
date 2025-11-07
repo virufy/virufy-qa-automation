@@ -3,7 +3,7 @@ name: Playwright Weekly CI Tests (Email Summary)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 1"
+    - cron: "0 8 * * 1"   # Every Monday at 8 AM UTC
   push:
 
 jobs:
@@ -32,11 +32,11 @@ jobs:
       - name: Run Playwright tests (JSON reporter)
         id: run_tests
         continue-on-error: true
-        env:
-          BASE_URL: https://virufy.org/en/
-          CI: true 
         run: |
           npx playwright test tests/weekly --shard=${{ matrix.shard }} --reporter=json > report.json
+
+      - name: Install jq
+        run: apt-get update && apt-get install -y jq
 
       - name: Generate HTML summary table
         id: mini_report
@@ -46,7 +46,7 @@ jobs:
           jq -r '.suites[].specs[] | "<tr><td>\(.title)</td><td>\(.tests[0].results[0].status)</td></tr>"' report.json >> summary.html || echo "<tr><td>No tests</td><td>N/A</td></tr>" >> summary.html
           echo "</table>" >> summary.html
           passed=$(jq '[.suites[].specs[].tests[].results[].status] | map(select(.=="passed")) | length' report.json)
-          failed=$(jq '[.suites[].specs[].tests[].results[].status] | map(select(.=="failed")) | length' report.json)
+          failed=$(jq '[.suites[].specs[].tests[].results[].results[].status] | map(select(.=="failed")) | length' report.json)
           total=$((passed+failed))
           echo "passed=$passed" >> $GITHUB_OUTPUT
           echo "failed=$failed" >> $GITHUB_OUTPUT
@@ -64,8 +64,7 @@ jobs:
           subject: "Weekly Playwright CI Report - ${{ steps.mini_report.outputs.passed }} Passed / ${{ steps.mini_report.outputs.failed }} Failed"
           to: ${{ secrets.REPORT_RECIPIENT }}
           from: "Playwright CI <${{ secrets.SMTP_USER }}>"
-          content_type: text/html
-          body: |
+          html_body: |
             <h3>Playwright CI Test Summary</h3>
             <p>Total: ${{ steps.mini_report.outputs.total }}</p>
             <p>Passed: ${{ steps.mini_report.outputs.passed }}</p>
