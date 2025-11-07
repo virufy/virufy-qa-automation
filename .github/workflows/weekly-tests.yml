@@ -34,7 +34,7 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           mkdir reports
-          npx playwright test tests/weekly --reporter=json > reports/report1.json
+          npx playwright test tests/smoke --reporter=json > reports/report1.json
 
       - name: Generate HTML summary table
         id: mini_report
