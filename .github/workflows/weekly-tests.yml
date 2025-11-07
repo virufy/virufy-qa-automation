@@ -29,11 +29,6 @@ jobs:
           apt-get update
           apt-get install -y jq
 
-      - name: Debug BASE_URL
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-        run: echo "BASE_URL is set (masked): ${BASE_URL}"
-
       - name: Run Playwright tests (JSON reporter to file)
         id: run_tests
         continue-on-error: true
