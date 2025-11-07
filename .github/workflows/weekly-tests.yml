@@ -1,4 +1,4 @@
-name: Playwright Weekly CI Tests (Email Summary)
+name: Playwright Weekly Tests (Email Report Integration)
 
 on:
   workflow_dispatch:
