@@ -85,7 +85,7 @@ jobs:
       # 🆕 Step: Deploy Playwright HTML report to GitHub Pages
       - name: Deploy Playwright report to GitHub Pages(Set Report Date frist)
         if: always()
-        run: echo "REPORT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+        run: echo "REPORT_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
       
       - name: Deploy Allure report to GitHub Pages
         if: always()
