@@ -29,8 +29,7 @@ jobs:
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: npx playwright test tests/smoke --reporter=list,json > results.json || true
-
+        run: npx playwright test tests/smoke --reporter=list,json=json-report.json || true
       - name: Parse JSON test results
         id: parse_results
         run: |
@@ -40,13 +39,13 @@ jobs:
           let passed=0, failed=0, total=0;
           let rows = '';
 
-          if (!fs.existsSync('results.json')) {
-            console.log('⚠️ No results.json found');
+          if (!fs.existsSync('json-report.json')) {
+            console.log('⚠️ No json-report.json found');
             fs.appendFileSync(out, `passed=0\nfailed=0\ntotal=0\nhtml_rows=No test results found.\n`);
             process.exit(0);
           }
 
-          const data = JSON.parse(fs.readFileSync('results.json','utf8'));
+          const data = JSON.parse(fs.readFileSync('json-report.json','utf8'));
 
           const collect = (suite) => {
             (suite.specs || []).forEach(spec => {
