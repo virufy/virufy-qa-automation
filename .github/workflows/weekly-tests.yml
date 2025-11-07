@@ -9,7 +9,7 @@ on:
 jobs:
   run-playwright:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/playwright:v1.55.0-jammy
+    container: mcr.microsoft.com/playwright:v1.45.0-jammy
 
     steps:
       - name: Checkout repository
@@ -36,38 +36,73 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: |
           mkdir -p reports
-          # Run Playwright with both GitHub and JSON reporters, output JSON to ./reports
+          # FIX: Run with 'github' and 'json' reporters.
+          # The '--output' flag tells all reporters where to save files.
+          # The json report will be at 'reports/report.json'
           npx playwright test tests/smoke --reporter=github,json --output=reports || true
 
       - name: Generate HTML summary table
         id: mini_report
         run: |
-          report_file="reports/test-results.json"
-          # fallback to default JSON name if different Playwright version
-          if [ ! -f "$report_file" ]; then
-            report_file=$(find reports -name "*.json" | head -n 1 || echo "")
-          fi
-
-          if [ -z "$report_file" ] || [ ! -s "$report_file" ]; then
+          # ---
+          # ⬇️ FIX 1: Point to the correct report file ⬇️
+          # ---
+          report_file="reports/report.json"
+          
+          if [ ! -s "$report_file" ]; then
             echo "<p>No JSON report found or tests did not run.</p>" > summary.html
             passed=0
             failed=0
             total=0
           else
             echo "<h3>Playwright Test Summary</h3>" > summary.html
-            echo "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;'><tr style='background:#f0f0f0;'><th>Test Name</th><th>Status</th></tr>" >> summary.html
-
-            # Parse all test titles + statuses (supports nested Playwright 1.55 schema)
+            echo "<table border='1' cellpadding='4' cellspacing='0'><tr><th>Test</th><th>Status</th></tr>" >> summary.html
+            
+            # ---
+            # ⬇️ FIX 2: Use a precise jq query to get test titles and status ⬇️
+            # This iterates through all suites, all specs, and all tests to find results.
+            # ---
             jq -r '
-              [ .. | objects
-                | select(has("title") and has("tests"))
-                | {title: .title, status: (.tests[].results[].status // "unknown")}
-              ]
-              | unique_by(.title)
-              | .[]
-              | "<tr><td>\(.title)</td><td style=\"color:" + (if .status=="passed" then "green" elif .status=="failed" then "red" else "black" end) + ";\">\(.status)</td></tr>"
+              .suites[] | .suites[]? | .specs[] | 
+              "<tr><td>\(.title)</td><td>\(.tests[0].results[0].status)</td></tr>"
             ' "$report_file" >> summary.html || true
-
             echo "</table>" >> summary.html
 
-            passed=$(jq '[.. | .status?] | map(select(.=="passed")
+            # ---
+            # ⬇️ FIX 3: Use a precise jq query to get correct pass/fail counts ⬇️
+            # ---
+            passed=$(jq -r '[.suites[].suites[]?.specs[] | select(.ok == true)] | length' "$report_file" || echo 0)
+            failed=$(jq -r '[.suites[].suites[]?.specs[] | select(.ok == false)] | length' "$report_file" || echo 0)
+            total=$((passed+failed))
+          fi
+          
+          # Export HTML and counts for the email step
+          echo "html<<EOF" >> $GITHUB_OUTPUT
+          cat summary.html >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "passed=$passed" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+          echo "total=$total" >> $GITHUB_OUTPUT
+
+      - name: Send summary email
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASS }}
+          subject: "Weekly Playwright CI Report - ${{ steps.mini_report.outputs.passed }} Passed / ${{ steps.mini_report.outputs.failed }} Failed"
+          to: ${{ secrets.REPORT_RECIPIENT }}
+          from: "Playwright CI <${{ secrets.SMTP_USER }}>"
+          html_body: |
+            <h3>Playwright CI Test Summary</h3>
+            <p>Total: ${{ steps.mini_report.outputs.total }}</p>
+            <p>Passed: ${{ steps.mini_report.outputs.passed }}</p>
+            <p>Failed: ${{ steps.mini_report.outputs.failed }}</p>
+            <br/>
+            <p>Detailed test summary:</p>
+            ${{ steps.mini_report.outputs.html }}
+            <br/>
+            <p>Full logs and artifacts:</p>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View GitHub Actions Run</a></p>
