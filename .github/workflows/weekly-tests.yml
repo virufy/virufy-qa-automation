@@ -1,59 +1,80 @@
-name: Weekly Allure Tests
+name: Playwright Weekly CI Tests (Allure + Email Table)
 
 on:
-  workflow_dispatch:     
+  workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 1"  
-  push:
+    - cron: "0 8 * * 1"   # Every Monday at 8 AM UTC
 
 jobs:
   run-playwright-allure:
     runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.45.0-jammy
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1/3, 2/3, 3/3]
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      # 🧪 Run only tests in the "weekly" folder
-      - name: Run weekly folder tests with Allure
-        continue-on-error: true
+      - name: Run Playwright tests (shard)
         id: run_tests
-        run: npx playwright test tests/smoke --reporter=line,allure-playwright
+        continue-on-error: true
+        env:
+          BASE_URL: https://virufy.org/en/
+          CI: true 
+        run: |
+          npx playwright test tests/weekly --shard=${{ matrix.shard }} --reporter=github,allure-playwright
 
       - name: Generate Allure report
+        if: always()
         run: |
-          npx allure generate allure-results --clean -o allure-report
-          ls -R allure-report  # debug visibility
+          npx allure generate allure-results --clean -o allure-report || echo "No allure-results found"
+          ls -R allure-report || true
 
       - name: Upload Allure report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
+          name: allure-report-shard-${{ matrix.shard }}
           path: allure-report
           retention-days: 7
 
       - name: Extract summary stats
+        if: always()
         id: summary
         run: |
-          passed=$(grep -o '"status":"passed"' allure-results/*.json | wc -l || true)
-          failed=$(grep -o '"status":"failed"' allure-results/*.json | wc -l || true)
+          passed=$(grep -o '"status":"passed"' allure-results/*.json 2>/dev/null | wc -l || true)
+          failed=$(grep -o '"status":"failed"' allure-results/*.json 2>/dev/null | wc -l || true)
           total=$((passed+failed))
           echo "passed=$passed" >> $GITHUB_OUTPUT
           echo "failed=$failed" >> $GITHUB_OUTPUT
           echo "total=$total" >> $GITHUB_OUTPUT
 
-      - name: Email test summary
+      - name: Generate mini HTML summary table
+        if: always()
+        id: mini_report
+        run: |
+          echo "<h3>Test Summary</h3>" > summary.html
+          echo "<p>Total: $(( $(grep -o '"status":"' allure-results/*.json 2>/dev/null | wc -l || true) ))</p>" >> summary.html
+          echo "<table border='1' cellpadding='4' cellspacing='0'><tr><th>Test Name</th><th>Status</th></tr>" >> summary.html
+          grep -h -E '"name":|"status":' allure-results/*.json | paste - - |
+          sed 's/.*"name":"\([^"]*\)".*"status":"\([^"]*\)".*/<tr><td>\1<\/td><td>\2<\/td><\/tr>/' >> summary.html
+          echo "</table>" >> summary.html
+          echo "html=$(cat summary.html)" >> $GITHUB_OUTPUT
+
+      - name: Send summary email
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -61,13 +82,19 @@ jobs:
           server_port: 465
           username: ${{ secrets.SMTP_USER }}
           password: ${{ secrets.SMTP_PASS }}
-          subject: "Weekly Allure Report — ${{ steps.summary.outputs.passed }} passed / ${{ steps.summary.outputs.failed }} failed"
-          to: ${{ secrets.REPORT_RECIPIENT }}
+          subject: "Weekly Playwright CI Report - ${{
+            steps.summary.outputs.passed }} Passed / ${{
+            steps.summary.outputs.failed }} Failed"
+          to: ${{secrets.REPORT_RECIPIENT}}
           from: "Playwright CI <${{ secrets.SMTP_USER }}>"
+          content_type: text/html
           body: |
-            ✅ Total tests: ${{ steps.summary.outputs.total }}
-            🟢 Passed: ${{ steps.summary.outputs.passed }}
-            🔴 Failed: ${{ steps.summary.outputs.failed }}
-
-            Full Allure report attached or downloadable in GitHub Actions artifacts.
-          attachments: allure-report/index.html
+            <h3>Playwright CI Test Summary</h3>
+            <p>Total Tests: ${{ steps.summary.outputs.total }}</p>
+            <p>Passed: ${{ steps.summary.outputs.passed }}</p>
+            <p>Failed: ${{ steps.summary.outputs.failed }}</p>
+            <br/>
+            ${{ steps.mini_report.outputs.html }}
+            <br/>
+            <p>View detailed logs and download Allure report artifacts at:</p>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">GitHub Actions Run</a></p>
