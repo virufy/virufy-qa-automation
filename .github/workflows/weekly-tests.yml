@@ -92,6 +92,29 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
           destination_dir: allure/${{ env.REPORT_DATE }}
+      
+      - name: Update Allure Reports Index
+        if: always()
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          mkdir -p tmp-index
+          echo "<h2>📈 Allure Reports Archive</h2><ul>" > tmp-index/index.html
+
+          for d in $(ls -1 allure | sort -r); do
+            echo "<li><a href='allure/$d/index.html'>$d</a></li>" >> tmp-index/index.html
+          done
+
+          echo "</ul>" >> tmp-index/index.html
+          mv tmp-index/index.html index.html
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Update Allure index"
+          git push origin gh-pages
+
 
       - name: Send summary email
         if: always()
