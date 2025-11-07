@@ -3,7 +3,7 @@ name: Playwright Weekly CI Tests (Email Summary + GitHub Pages)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 1"
+    - cron: "0 8 * * 1"  # Every Monday 8 AM UTC
   push:
 
 jobs:
@@ -32,13 +32,13 @@ jobs:
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
         run: npx playwright test tests/smoke || true
-      
+
       - name: Install Java (for Allure)
         run: |
           apt-get update
           apt-get install -y openjdk-17-jre
           java -version
-      
+
       - name: Generate Allure report
         id: generate_allure_report
         if: always()
@@ -50,7 +50,7 @@ jobs:
           node - <<'EOF'
           import fs from 'fs';
           const out = process.env.GITHUB_OUTPUT;
-          let passed=0, failed=0, total=0;
+          let passed = 0, failed = 0, total = 0;
           let rows = '';
 
           if (!fs.existsSync('json-report.json')) {
@@ -59,7 +59,7 @@ jobs:
             process.exit(0);
           }
 
-          const data = JSON.parse(fs.readFileSync('json-report.json','utf8'));
+          const data = JSON.parse(fs.readFileSync('json-report.json', 'utf8'));
 
           const collect = (suite) => {
             (suite.specs || []).forEach(spec => {
@@ -82,13 +82,15 @@ jobs:
           fs.appendFileSync(out, `html_rows<<EOF\n${htmlTable}\nEOF\n`);
           EOF
 
-      # 🆕 Step: Deploy Playwright HTML report to GitHub Pages
-      - name: Deploy Playwright report to GitHub Pages(Set Report Date frist)
+      # --- Set Report Timestamps ---
+      - name: Set Report Timestamp and Date
         if: always()
         run: |
           echo "REPORT_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
           echo "REPORT_DAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-      
+          echo "Generated timestamp: $REPORT_DATE and date: $REPORT_DAY"
+
+      # --- Publish Allure Report to GitHub Pages ---
       - name: Deploy Allure report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
@@ -96,33 +98,35 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
           destination_dir: allure/${{ env.REPORT_DATE }}
-      
+
+      # --- Update Main Index Page ---
       - name: Update Allure Reports Index
-      if: always()
-      shell: bash
-      run: |
-        git config --global --add safe.directory /__w/virufy-qa-automation/virufy-qa-automation
-        git fetch origin gh-pages
-        git checkout gh-pages
+        if: always()
+        shell: bash
+        run: |
+          git config --global --add safe.directory /__w/virufy-qa-automation/virufy-qa-automation
+          git fetch origin gh-pages
+          git checkout gh-pages
 
-        mkdir -p tmp-index
-        echo "<h2>📈 Allure Reports Archive</h2><ul>" > tmp-index/index.html
+          mkdir -p tmp-index
+          echo "<h2>📈 Allure Reports Archive</h2><ul>" > tmp-index/index.html
 
-        for d in $(ls -1 allure | sort -r); do
-          # Convert folder name (YYYY-MM-DD_HH-MM-SS) → readable text
-          readable=$(date -d "${d//_/ }" '+%b %d %Y — %H:%M:%S' 2>/dev/null || echo "$d")
-          echo "<li><a href='allure/$d/index.html'>$readable</a></li>" >> tmp-index/index.html
-        done
+          for d in $(ls -1 allure | sort -r); do
+            # Convert folder name (YYYY-MM-DD_HH-MM-SS) → readable text
+            readable=$(date -d "${d//_/ }" '+%b %d %Y — %H:%M:%S' 2>/dev/null || echo "$d")
+            echo "<li><a href='allure/$d/index.html'>$readable</a></li>" >> tmp-index/index.html
+          done
 
-        echo "</ul>" >> tmp-index/index.html
-        mv tmp-index/index.html index.html
+          echo "</ul>" >> tmp-index/index.html
+          mv tmp-index/index.html index.html
 
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add index.html
-        git commit -m "Update Allure index" || echo "No changes to commit"
-        git push origin gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Update Allure index" || echo "No changes to commit"
+          git push origin gh-pages
 
+      # --- Send Email Summary ---
       - name: Send summary email
         if: always()
         uses: dawidd6/action-send-mail@v3
