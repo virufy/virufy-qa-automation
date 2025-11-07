@@ -17,7 +17,7 @@ export default defineConfig({
     retries: 0,
     reporter: [
         ['list'],
-        ['html', { outputFolder: 'playwright-report', open: 'never' }],
+        //['html', { outputFolder: 'playwright-report', open: 'never' }],
         ['allure-playwright', { outputFolder: 'allure-results' }],
         ['json', { outputFile: 'json-report.json' }]
     ],
