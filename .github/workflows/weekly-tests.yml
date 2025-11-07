@@ -1,107 +1,86 @@
-# This name will appear in the GitHub Actions UI
-name: Playwright CI Tests
+name: Playwright Weekly CI Tests (Email Summary)
 
 on:
-  # Allows manual runs from the Actions tab
-  workflow_dispatch:     
-  
-  # Runs on a schedule
+  workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 1"  # 8:00 AM UTC every Monday
-    
-  # Runs on a push to any branch
+    - cron: "0 8 * * 1"
   push:
 
 jobs:
   run-playwright:
     runs-on: ubuntu-latest
-    
     container: mcr.microsoft.com/playwright:v1.45.0-jammy
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'npm'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-
-      - name: Run Playwright tests
-        id: run_tests 
-
-        continue-on-error: true
-        env:
-
-          BASE_URL: https://virufy.org/en/
-          CI: true 
-
-        run: npx playwright test tests/weekly --reporter=html,json:test-results.json
-
-
       - name: Install jq
-        if: always()
         run: |
           apt-get update
           apt-get install -y jq
 
+      - name: Debug BASE_URL
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: echo "BASE_URL is set (masked): ${BASE_URL}"
 
-      - name: Create Test Summary
-        if: always()
-        id: summary
+      - name: Run Playwright tests (JSON reporter to file)
+        id: run_tests
+        continue-on-error: true
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
         run: |
-          # Default values in case the file doesn't exist
-          PASSED_COUNT=0
-          FAILED_COUNT=0
-          TOTAL_COUNT=0
-          FAILED_LIST="No failed tests."
-          PASSED_LIST="No passed tests."
-          
-          # Check if the JSON file was created
-          if [ -f test-results.json ]; then
-            # Parse the JSON file to get counts
-            PASSED_COUNT=$(jq -r '[.suites[].specs[] | select(.ok == true)] | length' test-results.json)
-            FAILED_COUNT=$(jq -r '[.suites[].specs[] | select(.ok == false)] | length' test-results.json)
-            TOTAL_COUNT=$((PASSED_COUNT + FAILED_COUNT))
+          mkdir -p reports
+          npx playwright test tests/smoke --reporter=github,json=reports/report.json || true
 
-            # Get list of failed test titles, format them with a '•'
-            FAILED_LIST=$(jq -r '.suites[].specs[] | select(.ok == false) | "• " + .title' test-results.json)
-            if [ -z "$FAILED_LIST" ]; then FAILED_LIST="No failed tests."; fi
-            
-            # Get list of passed test titles
-            PASSED_LIST=$(jq -r '.suites[].specs[] | select(.ok == true) | "• " + .title' test-results.json)
-            if [ -z "$PASSED_LIST" ]; then PASSED_LIST="No passed tests."; fi
-          fi
-
-          # Save counts for the subject line
-          echo "passed_count=$PASSED_COUNT" >> $GITHUB_OUTPUT
-          echo "failed_count=$FAILED_COUNT" >> $GITHUB_OUTPUT
-          echo "total_count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
-          
-          # Save the multi-line lists to files to be used in the email body
-          echo "$FAILED_LIST" > failed_tests.txt
-          echo "$PASSED_LIST" > passed_tests.txt
-          
-          # Save the main status (success/failure) for the subject line
-          if [ $FAILED_COUNT -eq 0 ] && [ $TOTAL_COUNT -gt 0 ]; then
-             echo "run_status=✅" >> $GITHUB_OUTPUT
+      - name: Generate HTML summary table
+        id: mini_report
+        run: |
+          report_file="reports/report.json"
+          if [ ! -s "$report_file" ]; then
+            echo "<p>No JSON report found or tests did not run.</p>" > summary.html
+            passed=0
+            failed=0
+            total=0
           else
-             echo "run_status=❌" >> $GITHUB_OUTPUT
+            echo "<h3>Playwright Test Summary</h3>" > summary.html
+            echo "<table border='1' cellpadding='4' cellspacing='0'><tr><th>Test</th><th>Status</th></tr>" >> summary.html
+            # Robust extraction: find any object with "tests" and a "title", then take the first result status
+            jq -r '
+              [ .. | objects
+                | select(has("tests") and has("title"))
+                | {title: .title, status: (.tests[0].results[0].status // "unknown")}
+              ]
+              | .[]
+              | "<tr><td>\(.title)</td><td>\(.status)</td></tr>"
+            ' "$report_file" >> summary.html || true
+            echo "</table>" >> summary.html
+
+            # Totals based on all result statuses found anywhere
+            passed=$(jq '[.. | .status?] | map(select(.=="passed")) | length' "$report_file" || echo 0)
+            failed=$(jq '[.. | .status?] | map(select(.=="failed")) | length' "$report_file" || echo 0)
+            total=$((passed+failed))
           fi
 
+          # Export HTML and counts for the email step
+          echo "html<<EOF" >> $GITHUB_OUTPUT
+          cat summary.html >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "passed=$passed" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+          echo "total=$total" >> $GITHUB_OUTPUT
 
-      - name: Zip Playwright Report
-        if: always()
-        # This zips the 'playwright-report' folder into a file named 'playwright-report.zip'
-        run: zip -r playwright-report.zip ./playwright-report
-
-
-      - name: Email test summary
+      - name: Send summary email
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -109,44 +88,17 @@ jobs:
           server_port: 465
           username: ${{ secrets.SMTP_USER }}
           password: ${{ secrets.SMTP_PASS }}
-          
-          # Subject now uses our parsed counts and status
-          subject: "CI Test Report: ${{ steps.summary.outputs.run_status }} ${{ steps.summary.outputs.passed_count }} Passed / ${{ steps.summary.outputs.failed_count }} Failed"
-          to: qa1@gmail.com, qa2@gmail.com, qa3@gmail.com
+          subject: "Weekly Playwright CI Report - ${{ steps.mini_report.outputs.passed }} Passed / ${{ steps.mini_report.outputs.failed }} Failed"
+          to: ${{ secrets.REPORT_RECIPIENT }}
           from: "Playwright CI <${{ secrets.SMTP_USER }}>"
-          
-          # This tells Gmail to render the body as Markdown (tables, bold, etc.)
-          content_type: text/markdown
-          
-          # Read the summary from our text files
-          body: |
-            ## Test Run Summary
-            
-            | Status | Count |
-            | :--- | ---: |
-            | 🟢 Passed | ${{ steps.summary.outputs.passed_count }} |
-            | 🔴 Failed | ${{ steps.summary.outputs.failed_count }} |
-            | **Total** | **${{ steps.summary.outputs.total_count }}** |
-            
-            ---
-            
-            ### 🔴 Failed Tests
-            ```
-            $(cat failed_tests.txt)
-            ```
-            
-            ---
-            
-            ### 🟢 Passed Tests
-            ```
-            $(cat passed_tests.txt)
-            ```
-            
-            ---
-            The full interactive HTML report is attached as `playwright-report.zip`.
-            
-            View the full run logs in GitHub:
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            
-
-          attachments: playwright-report.zip
+          html_body: |
+            <h3>Playwright CI Test Summary</h3>
+            <p>Total: ${{ steps.mini_report.outputs.total }}</p>
+            <p>Passed: ${{ steps.mini_report.outputs.passed }}</p>
+            <p>Failed: ${{ steps.mini_report.outputs.failed }}</p>
+            <br/>
+            <p>Detailed test summary:</p>
+            ${{ steps.mini_report.outputs.html }}
+            <br/>
+            <p>Full logs and artifacts:</p>
+            <p><a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View GitHub Actions Run</a></p>
