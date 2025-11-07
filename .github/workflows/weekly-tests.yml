@@ -43,24 +43,41 @@ jobs:
           let passed = 0, failed = 0, total = 0;
           let dataFile = null;
           
-          // Playwright HTML report stores data in playwright-report/data.json
-          const possiblePaths = [
-            'playwright-report/data.json',
-            path.join(process.cwd(), 'playwright-report', 'data.json')
-          ];
+          // Playwright HTML report stores data in playwright-report/data/ directory
+          const dataDir = 'playwright-report/data';
           
-          // Also check for alternative locations
-          for (const filePath of possiblePaths) {
-            if (fs.existsSync(filePath)) {
-              dataFile = filePath;
-              console.log(`Found HTML report data at: ${filePath}`);
-              break;
+          if (fs.existsSync(dataDir)) {
+            console.log('Found data directory, listing files...');
+            const files = fs.readdirSync(dataDir);
+            console.log('Files in data directory:', files);
+            
+            // Look for report.json or similar files
+            const possibleFiles = ['report.json', 'data.json', 'index.json'];
+            for (const fileName of possibleFiles) {
+              const filePath = path.join(dataDir, fileName);
+              if (fs.existsSync(filePath)) {
+                dataFile = filePath;
+                console.log(`Found report data at: ${filePath}`);
+                break;
+              }
+            }
+            
+            // If not found, try to find any JSON file in the data directory
+            if (!dataFile) {
+              for (const file of files) {
+                if (file.endsWith('.json')) {
+                  dataFile = path.join(dataDir, file);
+                  console.log(`Found JSON file: ${dataFile}`);
+                  break;
+                }
+              }
             }
           }
           
           if (dataFile) {
             try {
               const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+              console.log('Successfully parsed JSON data');
               
               // Recursive function to count tests from suites
               function countTests(suite) {
@@ -86,16 +103,14 @@ jobs:
               
               if (data.suites && Array.isArray(data.suites)) {
                 data.suites.forEach(countTests);
+              } else {
+                console.log('No suites found in data. Data structure:', Object.keys(data));
               }
             } catch (error) {
               console.error(`Error parsing HTML report data: ${error.message}`);
             }
           } else {
-            console.log('HTML report data file not found. Checking playwright-report directory...');
-            if (fs.existsSync('playwright-report')) {
-              const files = fs.readdirSync('playwright-report');
-              console.log('Files in playwright-report:', files);
-            }
+            console.log('HTML report data file not found in data directory');
           }
           
           const output = process.env.GITHUB_OUTPUT;
