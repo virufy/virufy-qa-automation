@@ -113,7 +113,8 @@ jobs:
 
           for d in $(ls -1 allure | sort -r); do
             # Convert folder name (YYYY-MM-DD_HH-MM-SS) → readable text
-            readable=$(date -d "${d//_/ }" '+%b %d %Y — %H:%M:%S' 2>/dev/null || echo "$d")
+            readable=$(echo "$d" | sed -E 's/_/ /; s/([0-9]{2})-([0-9]{2})-([0-9]{2})$/\1:\2:\3/' | \
+            xargs -I{} date -d "{}" '+%b %d %Y — %H:%M:%S' 2>/dev/null || echo "$d")
             echo "<li><a href='allure/$d/index.html'>$readable</a></li>" >> tmp-index/index.html
           done
 
