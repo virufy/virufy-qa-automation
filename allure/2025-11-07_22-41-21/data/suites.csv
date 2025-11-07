@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","1018","smoke: main content sections are visible","Desktop Chromium","Fri Nov 07 22:41:02 GMT 2025","passed","Fri Nov 07 22:41:03 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
+"","7301","smoke: basic navigation works","Desktop Chromium","Fri Nov 07 22:41:03 GMT 2025","passed","Fri Nov 07 22:41:10 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
+"","1075","smoke: footer section is present","Desktop Chromium","Fri Nov 07 22:41:10 GMT 2025","passed","Fri Nov 07 22:41:11 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
+"","1445","smoke: homepage loads with correct title","Desktop Chromium","Fri Nov 07 22:41:00 GMT 2025","passed","Fri Nov 07 22:41:02 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
