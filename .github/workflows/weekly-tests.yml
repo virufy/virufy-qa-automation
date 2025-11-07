@@ -108,6 +108,8 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
 
+          export TZ="America/New_York"
+
           mkdir -p tmp-index
           echo "<h2>📈 Allure Reports Archive</h2><ul>" > tmp-index/index.html
 
