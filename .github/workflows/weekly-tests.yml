@@ -9,7 +9,7 @@ on:
 jobs:
   run-playwright:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/playwright:v1.45.0-jammy
+    container: mcr.microsoft.com/playwright:v1.55.0-jammy
 
     steps:
       - name: Checkout repository
