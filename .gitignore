@@ -25,6 +25,7 @@ playwright/.cache/
 # Allure reporting
 allure-results/
 allure-report/
+json-report.json
 
 # Test artifacts
 screenshots/
