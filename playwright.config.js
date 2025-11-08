@@ -19,7 +19,7 @@ export default defineConfig({
         ['list'],
         //['html', { outputFolder: 'playwright-report', open: 'never' }],
         ['allure-playwright', { outputFolder: 'allure-results' }],
-        ['json', { outputFile: 'json-report.json' }]
+        //['json', { outputFile: 'json-report.json' }]
     ],
     use: {
         headless: true,
