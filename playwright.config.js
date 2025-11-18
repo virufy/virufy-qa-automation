@@ -19,12 +19,12 @@ export default defineConfig({
         ['list'],
         //['html', { outputFolder: 'playwright-report', open: 'never' }],
         ['allure-playwright', { outputFolder: 'allure-results' }],
-        //['json', { outputFile: 'json-report.json' }]
+        ['json', { outputFile: 'json-report.json' }]
     ],
     use: {
         headless: true,
-        baseURL: BASE_URL, // <-- Use the constant
-        trace: 'on-first-retry',   // instead of 'on'
+        baseURL: BASE_URL, 
+        trace: 'on-first-retry',   
         video: 'retain-on-failure',
         screenshot: 'only-on-failure'
     },
