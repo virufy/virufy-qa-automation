@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","1205","smoke: footer section is present","Desktop Chromium","Tue Nov 18 23:47:06 GMT 2025","passed","Tue Nov 18 23:47:07 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
+"","1881","smoke: homepage loads with correct title for Virufy","Desktop Chromium","Tue Nov 18 23:46:55 GMT 2025","passed","Tue Nov 18 23:46:57 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
+"","7458","smoke: basic navigation works","Desktop Chromium","Tue Nov 18 23:46:59 GMT 2025","passed","Tue Nov 18 23:47:06 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
+"","1179","smoke: main content sections are visible","Desktop Chromium","Tue Nov 18 23:46:57 GMT 2025","passed","Tue Nov 18 23:46:59 GMT 2025","Homepage Smoke Tests","smoke/homepage-minimal.spec.js","",""
