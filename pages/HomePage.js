@@ -81,7 +81,8 @@ export class HomePage extends BasePage {
 
     async verifyTopActionButtons() {
         await expect(this.joinUsButton).toBeVisible();
-        await expect(this.donateButton).toBeVisible();
+        // the donate us button was removed recently so this check is obsolete
+        //await expect(this.donateButton).toBeVisible();
     }
 
     async verifyFooterLinks() {
