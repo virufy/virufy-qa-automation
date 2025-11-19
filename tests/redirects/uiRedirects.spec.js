@@ -13,15 +13,18 @@ const GOOGLE_HOSTS = [
     'presentation.google.com'
 ];
 
-test.describe(' UI Redirect and Page Validation Suite', () => {
-    for (const redirect of redirects) {
+test.describe('UI Redirect and Page Validation Suite', () => {
+    redirects.forEach((redirect, index) => {
         const { from, to, titleKeyword, external = false } = redirect;
 
-        test(`Validate redirect: /${from}`, async ({ page }) => {
+        const counter = index + 1;
+        const total = redirects.length;
+
+        test(`[${counter}/${total}] Validate redirect: /${from}`, async ({ page }) => {
             const startUrl = joinUrl(BASE_URL, from);
             const isExternal = external || (to.startsWith('http') && !to.includes('virufy.org'));
 
-            console.log(`\n → Checking redirect: ${startUrl}`);
+            console.log(`\n → (${counter}) Checking redirect: ${startUrl}`);
 
             // Step1 – Visit start URL
             let finalUrl = '';
@@ -41,17 +44,18 @@ test.describe(' UI Redirect and Page Validation Suite', () => {
                 const expectedDomain = new URL(to).hostname;
                 const actualDomain = new URL(finalUrl).hostname;
 
-                // If it’s a Google domain, just confirm we’re on any google.com subdomain
+                // If it’s a Google domain, allow any Google host
                 const isGoogle = GOOGLE_HOSTS.some(h => actualDomain.includes(h)) || actualDomain.endsWith('google.com');
                 if (isGoogle) {
                     const title = await page.title().catch(() => '');
                     console.log(`   → Page Title: ${title}`);
                     expect(title.toLowerCase()).toContain('google');
                     console.log(' Verified Google redirect via title check');
-                    return; // exit early → don’t wait further
+                    console.log(` ✔ Redirect validated successfully (${counter}/${total})`);
+                    return; // exit early
                 }
 
-                // Otherwise, compare normal external domain (like gofundme)
+                // Normal external domain check (e.g., GoFundMe)
                 expect(actualDomain).toBe(expectedDomain);
             } else {
                 const cleanExpected = to.replace(/^\//, '').replace(/\/$/, '');
@@ -74,11 +78,11 @@ test.describe(' UI Redirect and Page Validation Suite', () => {
                 ).toContain(titleKeyword.toLowerCase());
             }
 
-            // Step4 – Heading (content)
+            // Step4 – Heading (fallback content check)
             const heading = await page.locator('h1, h2').first().textContent().catch(() => null);
             if (heading) console.log(`   → Found Heading: ${heading.trim()}`);
 
-            console.log(' Redirect and content verified successfully');
+            console.log(` ✔ Redirect validated successfully (${counter}/${total})`);
         });
-    }
+    });
 });

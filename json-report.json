@@ -64,20 +64,20 @@
   },
   "suites": [
     {
-      "title": "smoke/homepage-minimal.spec.js",
-      "file": "smoke/homepage-minimal.spec.js",
+      "title": "redirects/uiRedirects.spec.js",
+      "file": "redirects/uiRedirects.spec.js",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Homepage Smoke Tests",
-          "file": "smoke/homepage-minimal.spec.js",
-          "line": 4,
+          "title": "UI Redirect and Page Validation Suite",
+          "file": "redirects/uiRedirects.spec.js",
+          "line": 16,
           "column": 6,
           "specs": [
             {
-              "title": "smoke: homepage loads with correct title for Virufy",
+              "title": "[1/20] Validate redirect: /null",
               "ok": true,
               "tags": [],
               "tests": [
@@ -92,42 +92,42 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1696,
+                      "duration": 2487,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (1) Checking redirect: https://virufy.org/null\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy | AI-Powered Respiratory Health Screening\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Welcome to Virufy\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (1/20)\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-08T20:21:29.081Z",
+                      "startTime": "2025-11-19T01:20:42.293Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6ImZlYXR1cmUiLCJ2YWx1ZSI6IlNtb2tlIFRlc3RzIn1dfX0="
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InNldmVyaXR5IiwidmFsdWUiOiJjcml0aWNhbCJ9XX19"
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InRhZyIsInZhbHVlIjoic21va2UifV19fQ=="
-                        }
-                      ]
+                      "attachments": []
                     }
                   ],
                   "status": "expected"
                 }
               ],
-              "id": "74a12825b772a55d15fc-54fdc21cee072db66833",
-              "file": "smoke/homepage-minimal.spec.js",
-              "line": 6,
-              "column": 5
+              "id": "3ff7d32b5d0736d4cb8c-68256765e8198b3ca692",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
             },
             {
-              "title": "smoke: main content sections are visible",
+              "title": "[2/20] Validate redirect: /team",
               "ok": true,
               "tags": [],
               "tests": [
@@ -142,42 +142,42 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1075,
+                      "duration": 1929,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (2) Checking redirect: https://virufy.org/team\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/advisors//\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy Advisors | Global Experts Supporting AI in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Our Advisors\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (2/20)\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-08T20:21:31.114Z",
+                      "startTime": "2025-11-19T01:20:45.086Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6ImZlYXR1cmUiLCJ2YWx1ZSI6IlNtb2tlIFRlc3RzIn1dfX0="
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InNldmVyaXR5IiwidmFsdWUiOiJjcml0aWNhbCJ9XX19"
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InRhZyIsInZhbHVlIjoic21va2UifV19fQ=="
-                        }
-                      ]
+                      "attachments": []
                     }
                   ],
                   "status": "expected"
                 }
               ],
-              "id": "74a12825b772a55d15fc-116e7c1e40be18c1e222",
-              "file": "smoke/homepage-minimal.spec.js",
-              "line": 13,
-              "column": 5
+              "id": "3ff7d32b5d0736d4cb8c-6102f031caebc7940428",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
             },
             {
-              "title": "smoke: basic navigation works",
+              "title": "[3/20] Validate redirect: /team/",
               "ok": true,
               "tags": [],
               "tests": [
@@ -192,42 +192,42 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7012,
+                      "duration": 1846,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (3) Checking redirect: https://virufy.org/team/\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/advisors//\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy Advisors | Global Experts Supporting AI in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Our Advisors\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (3/20)\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-08T20:21:32.195Z",
+                      "startTime": "2025-11-19T01:20:47.022Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6ImZlYXR1cmUiLCJ2YWx1ZSI6IlNtb2tlIFRlc3RzIn1dfX0="
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InNldmVyaXR5IiwidmFsdWUiOiJjcml0aWNhbCJ9XX19"
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InRhZyIsInZhbHVlIjoic21va2UifV19fQ=="
-                        }
-                      ]
+                      "attachments": []
                     }
                   ],
                   "status": "expected"
                 }
               ],
-              "id": "74a12825b772a55d15fc-b10af10c689d0887b945",
-              "file": "smoke/homepage-minimal.spec.js",
-              "line": 24,
-              "column": 5
+              "id": "3ff7d32b5d0736d4cb8c-4907a78d0d817870d978",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
             },
             {
-              "title": "smoke: footer section is present",
+              "title": "[4/20] Validate redirect: /opportunities",
               "ok": true,
               "tags": [],
               "tests": [
@@ -242,39 +242,839 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1139,
+                      "duration": 2269,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (4) Checking redirect: https://virufy.org/opportunities\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/join-us/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Virufy is entirely run by volunteers and pro bono partner companies.\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (4/20)\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-08T20:21:39.214Z",
+                      "startTime": "2025-11-19T01:20:48.873Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6ImZlYXR1cmUiLCJ2YWx1ZSI6IlNtb2tlIFRlc3RzIn1dfX0="
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InNldmVyaXR5IiwidmFsdWUiOiJjcml0aWNhbCJ9XX19"
-                        },
-                        {
-                          "name": "Allure Metadata (metadata)",
-                          "contentType": "application/vnd.allure.message+json",
-                          "body": "eyJ0eXBlIjoibWV0YWRhdGEiLCJkYXRhIjp7ImxhYmVscyI6W3sibmFtZSI6InRhZyIsInZhbHVlIjoic21va2UifV19fQ=="
-                        }
-                      ]
+                      "attachments": []
                     }
                   ],
                   "status": "expected"
                 }
               ],
-              "id": "74a12825b772a55d15fc-c6a2d429ce96a930137c",
-              "file": "smoke/homepage-minimal.spec.js",
-              "line": 31,
-              "column": 5
+              "id": "3ff7d32b5d0736d4cb8c-7f60186222e146b2e9af",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[5/20] Validate redirect: /fukuoka",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2108,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (5) Checking redirect: https://virufy.org/fukuoka\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/fukuoka/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: 一般社団法人 Virufy Fukuoka\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (5/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:20:51.147Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-e2ae07e908c13fab2eed",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[6/20] Validate redirect: /join",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1984,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (6) Checking redirect: https://virufy.org/join\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/join-us/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Virufy is entirely run by volunteers and pro bono partner companies.\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (6/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:20:53.260Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-d95ef449f8e616705484",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[7/20] Validate redirect: /halfmydaf",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2106,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (7) Checking redirect: https://virufy.org/halfmydaf\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/halfmydaf/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Virufy: Participation in #HalfMyDAF 2025 Initiative\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (7/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:20:55.250Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-11f89e3f034ceec79df4",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[8/20] Validate redirect: /donate",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3278,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (8) Checking redirect: https://virufy.org/donate\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://www.gofundme.com/f/donate-virufy\n"
+                        },
+                        {
+                          "text": "   → Page Title: Fundraiser by Amil Khanzada : Donate to Virufy: Revolutionizing COVID-19 Detection\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Donate to Virufy: Revolutionizing COVID-19 Detection\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (8/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:20:57.361Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-370cf965d9692e4ff0bf",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[9/20] Validate redirect: /dubai-jp",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2384,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (9) Checking redirect: https://virufy.org/dubai-jp\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/dubai-jp/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Virufyドバイ2025年医療AIインターンシップ募集\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (9/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:00.646Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-e34a482e0c15d070cb8b",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[10/20] Validate redirect: /news/uae-adghw-apr-2025",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2035,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (10) Checking redirect: https://virufy.org/news/uae-adghw-apr-2025\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/news/uae-adghw-apr-2025/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Abu Dhabi, United Arab Emirates June 25th, 2025\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (10/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:03.036Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-0000616b92b0016f5fb4",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[11/20] Validate redirect: /paper",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2001,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (11) Checking redirect: https://virufy.org/paper\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/paper/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Paper\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (11/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:05.078Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-bc1d8f3abc0ba8138eac",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[12/20] Validate redirect: /press",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2008,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (12) Checking redirect: https://virufy.org/press\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/news/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy | News and Press Releases\n"
+                        },
+                        {
+                          "text": "   → Found Heading: News\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (12/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:07.084Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-ce099a9d7c181ac0a664",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[13/20] Validate redirect: /privacy_policy",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1993,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (13) Checking redirect: https://virufy.org/privacy_policy\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/privacy-policy/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: VirufyPrivacy Policy\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (13/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:09.103Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-50042e57c2ba23a025f3",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[14/20] Validate redirect: /uae-adghw-apr-2025",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1916,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (14) Checking redirect: https://virufy.org/uae-adghw-apr-2025\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://virufy.org/en/news/uae-adghw-apr-2025/\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare\n"
+                        },
+                        {
+                          "text": "   → Found Heading: Abu Dhabi, United Arab Emirates June 25th, 2025\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (14/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:11.102Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-880b4868b3768ffad0af",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[15/20] Validate redirect: /virumap-msg",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2636,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (15) Checking redirect: https://virufy.org/virumap-msg\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://docs.google.com/document/d/1e6p9TAd5NC4W7Lp58oxIp3FhUDGMexXXPL-f4--hhKk/edit?tab=t.0\n"
+                        },
+                        {
+                          "text": "   → Page Title: Virufy One Page Summary (Shared) - Google Docs\n"
+                        },
+                        {
+                          "text": " Verified Google redirect via title check\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (15/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:13.023Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-8308cd95532d45613c6e",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[16/20] Validate redirect: /virumap-msg-jp",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2564,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (16) Checking redirect: https://virufy.org/virumap-msg-jp\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://docs.google.com/document/d/1HLQ7ZNMR1wO3BdaWnfQw3_yyhBfNBJGYz8zWN25gA8o/edit?tab=t.0\n"
+                        },
+                        {
+                          "text": "   → Page Title: ViruMap One Page Summary (Japanese) - Google Docs\n"
+                        },
+                        {
+                          "text": " Verified Google redirect via title check\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (16/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:15.664Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-f198b5d22a16a0fcf835",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[17/20] Validate redirect: /virumap-slides",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2873,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (17) Checking redirect: https://virufy.org/virumap-slides\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://docs.google.com/presentation/d/1Sb3WXxKrJPbdKkKH9IXV4iWCd3b5iSz5f_92UuJbYZc/edit?slide=id.g31c881d19ba_0_0#slide=id.g31c881d19ba_0_0\n"
+                        },
+                        {
+                          "text": "   → Page Title: ViruMap Deck - Apr 2025 - Google Slides\n"
+                        },
+                        {
+                          "text": " Verified Google redirect via title check\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (17/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:18.233Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-a42281a8356d304223f7",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[18/20] Validate redirect: /virumap-slides-jp",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3792,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (18) Checking redirect: https://virufy.org/virumap-slides-jp\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://docs.google.com/presentation/d/1GqNirFzOrWsLoLaH5hSe8YVXTMMrWZ1gW5d56jICs30/edit?slide=id.g2de78196a55_0_0#slide=id.g2de78196a55_0_0\n"
+                        },
+                        {
+                          "text": "   → Page Title: ViruMap Deck - Japanese (Public) - Google Slides\n"
+                        },
+                        {
+                          "text": " Verified Google redirect via title check\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (18/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:21.113Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-36dc6e991f70570cf5be",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[19/20] Validate redirect: /join-jp",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3033,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (19) Checking redirect: https://virufy.org/join-jp\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&dsh=S-1591081855%3A1763515285995822&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&ifkv=ARESoU3vOi2YpahpGVIAd3YDDVjX0i8uE8rE5KuwI6hgyGzJgLXQUuRgkIlrt5aTQGn0QVZEmHTC&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin\n"
+                        },
+                        {
+                          "text": "   → Page Title: Google Forms: Sign-in\n"
+                        },
+                        {
+                          "text": " Verified Google redirect via title check\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (19/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:24.911Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-9ac573d48ea5dea6d7dc",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
+            },
+            {
+              "title": "[20/20] Validate redirect: /apply",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chromium",
+                  "projectName": "Desktop Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2581,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n → (20) Checking redirect: https://virufy.org/apply\n"
+                        },
+                        {
+                          "text": "   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&dsh=S-854396400%3A1763515288653876&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&ifkv=ARESoU3buAy-WFHOEWdEDGbjHSfGLuXTfxVJsyHqzAYmdXZpbA8Bg3f5SqUSBW8Xmwr92ajEk2g88A&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin\n"
+                        },
+                        {
+                          "text": "   → Page Title: Google Forms: Sign-in\n"
+                        },
+                        {
+                          "text": " Verified Google redirect via title check\n"
+                        },
+                        {
+                          "text": " ✔ Redirect validated successfully (20/20)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-19T01:21:27.949Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3ff7d32b5d0736d4cb8c-21e126d0bcfa2173d182",
+              "file": "redirects/uiRedirects.spec.js",
+              "line": 23,
+              "column": 9
             }
           ]
         }
@@ -283,9 +1083,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-11-08T20:21:28.738Z",
-    "duration": 11654.317,
-    "expected": 4,
+    "startTime": "2025-11-19T01:20:41.942Z",
+    "duration": 48656.786,
+    "expected": 20,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
