@@ -1,0 +1,6 @@
+
+ → Checking redirect: https://virufy.org/team
+   → Final URL: https://virufy.org/en/advisors//
+   → Page Title: Virufy Advisors | Global Experts Supporting AI in Healthcare
+   → Found Heading: Our Advisors
+ Redirect and content verified successfully

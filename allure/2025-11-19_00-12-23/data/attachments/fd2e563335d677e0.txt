@@ -1,0 +1,6 @@
+
+ → Checking redirect: https://virufy.org/fukuoka
+   → Final URL: https://virufy.org/en/fukuoka/
+   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare
+   → Found Heading: 一般社団法人 Virufy Fukuoka
+ Redirect and content verified successfully
