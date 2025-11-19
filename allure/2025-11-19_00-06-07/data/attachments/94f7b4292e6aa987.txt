@@ -1,0 +1,5 @@
+
+ → Checking redirect: https://virufy.org/virumap-msg-jp
+   → Final URL: https://docs.google.com/document/d/1HLQ7ZNMR1wO3BdaWnfQw3_yyhBfNBJGYz8zWN25gA8o/edit?tab=t.0
+   → Page Title: ViruMap One Page Summary (Japanese) - Google Docs
+ Verified Google redirect via title check
