@@ -3,7 +3,7 @@ name: Playwright Daily CI Tests (Email Summary + GitHub Pages)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * *"  # Every day 8 AM UTC
+    - cron: "0 9 * * *"  # Every day 8 AM UTC
   push:
 
 jobs:
