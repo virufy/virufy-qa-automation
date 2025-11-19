@@ -1,0 +1,197 @@
+name: Playwright Daily CI Tests (Email Summary + GitHub Pages)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * *"  # Every day 8 AM UTC
+  push:
+
+jobs:
+  run-playwright:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.55.0-jammy
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Playwright tests
+        id: run_tests
+        continue-on-error: true
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: npx playwright test tests/smoke tests/redirects/uiRedirects.spec.js || true
+
+      - name: Install Java (for Allure)
+        run: |
+          apt-get update
+          apt-get install -y openjdk-17-jre
+          java -version
+
+      - name: Generate Allure report
+        id: generate_allure_report
+        if: always()
+        run: npx allure generate allure-results --clean -o allure-report
+
+      - name: Parse JSON test results
+        id: parse_results
+        run: |
+          node - <<'EOF'
+          import fs from 'fs';
+          const out = process.env.GITHUB_OUTPUT;
+          let passed = 0, failed = 0, total = 0;
+          let rows = '';
+
+          if (!fs.existsSync('json-report.json')) {
+            console.log(' No json-report.json found');
+            fs.appendFileSync(out, `passed=0\nfailed=0\ntotal=0\nhtml_rows=No test results found.\n`);
+            process.exit(0);
+          }
+
+          const data = JSON.parse(fs.readFileSync('json-report.json', 'utf8'));
+
+          const collect = (suite) => {
+            (suite.specs || []).forEach(spec => {
+              (spec.tests || []).forEach(test => {
+                const title = spec.title || test.title || 'Untitled';
+                const status = test?.outcome || test?.results?.at(-1)?.status || 'unknown';
+                total++;
+                let color = 'gray';
+                if (status === 'expected' || status === 'passed') { passed++; color='green'; }
+                else if (status === 'unexpected' || status === 'failed') { failed++; color='red'; }
+                rows += `<tr><td>${title}</td><td style="color:${color};font-weight:bold;">${status}</td></tr>`;
+              });
+            });
+            (suite.suites || []).forEach(collect);
+          };
+          (data.suites || []).forEach(collect);
+
+          const htmlTable = rows || '<tr><td colspan="2">No tests found</td></tr>';
+          fs.appendFileSync(out, `passed=${passed}\nfailed=${failed}\ntotal=${total}\n`);
+          fs.appendFileSync(out, `html_rows<<EOF\n${htmlTable}\nEOF\n`);
+          EOF
+
+      # --- Set Report Timestamps ---
+      - name: Set Report Timestamp and Date
+        if: always()
+        run: |
+          echo "REPORT_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
+          echo "REPORT_DAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "Generated timestamp: $REPORT_DATE and date: $REPORT_DAY"
+
+      # --- Publish Allure Report to GitHub Pages ---
+      - name: Deploy Allure report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          destination_dir: allure/${{ env.REPORT_DATE }}
+
+      # --- Update Main Index Page ---
+      - name: Update Allure Reports Index
+        if: always()
+        shell: bash
+        run: |
+          git config --global --add safe.directory /__w/virufy-qa-automation/virufy-qa-automation
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          mkdir -p tmp-index
+          INDEX_FILE="$(pwd)/tmp-index/index.html"
+
+          echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Allure Reports Archive</title>" > "$INDEX_FILE"
+          echo "<style>
+            body {font-family: Arial, sans-serif; background:#f9fafc; margin:20px;}
+            h2 {text-align:center; color:#004aad;}
+            .report-card {background:#fff; border:1px solid #ddd; border-radius:10px; padding:12px 18px; margin:8px auto; width:60%; box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+            .latest {border-left:6px solid #28a745;}
+            a {text-decoration:none; color:#0366d6; font-weight:bold;}
+            footer {text-align:right; color:#777; font-size:12px; margin-top:25px;}
+          </style></head><body>" >> "$INDEX_FILE"
+
+          echo "<h2>📈 Allure Reports Archive </h2>" >> "$INDEX_FILE"
+
+          first=true
+          for d in $(ls -1 allure | sort -r); do
+            readable=$(echo "$d" | sed -E 's/_/ /; s/([0-9]{2})-([0-9]{2})-([0-9]{2})$/\1:\2:\3/' | \
+                       xargs -I{} date -u -d "{} -5 hours" '+%b %d %Y — %H:%M:%S' 2>/dev/null || echo "$d")
+            if [ "$first" = true ]; then
+              echo "<div class='report-card latest'><a href='allure/$d/index.html'>🟢 $readable (Latest)</a></div>" >> "$INDEX_FILE"
+              first=false
+            else
+              echo "<div class='report-card'><a href='allure/$d/index.html'>$readable</a></div>" >> "$INDEX_FILE"
+            fi
+          done
+
+          echo "<footer>Last updated: $(date -u '+%b %d %Y — %H:%M:%S UTC')</footer>" >> "$INDEX_FILE"
+          echo "</body></html>" >> "$INDEX_FILE"
+
+          mv "$INDEX_FILE" ./index.html
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Update Allure index UI" || echo "No changes to commit"
+          git push origin gh-pages
+
+      # --- Send Email Summary ---
+      - name: Send summary email
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASS }}
+          subject: "[${{ env.REPORT_DAY }}] Virufy QA Automation Report"
+          to: ${{ secrets.REPORT_RECIPIENT }}
+          from: "Playwright CI <${{ secrets.SMTP_USER }}>"
+          html_body: |
+            <div style="font-family:Arial,sans-serif;">
+              <h2 style="background:#004aad;color:white;padding:12px;text-align:center;border-radius:6px 6px 0 0;">
+                Virufy QA Automation Report - ${{ env.REPORT_DAY }}
+              </h2>
+
+
+              <table border="1" cellpadding="10" style="border-collapse:collapse;width:100%;font-size:14px;">
+                <tr style="background:#f0f0f0;"><th>Metric</th><th>Count</th></tr>
+                <tr><td><b>Total</b></td><td>${{ steps.parse_results.outputs.total }}</td></tr>
+                <tr style="background:#e8f5e9;"><td><b>Passed</b></td><td style="color:green;font-weight:bold;">${{ steps.parse_results.outputs.passed }}</td></tr>
+                <tr style="background:#ffebee;"><td><b>Failed</b></td><td style="color:red;font-weight:bold;">${{ steps.parse_results.outputs.failed }}</td></tr>
+              </table>
+
+              <br/>
+              <h4> Detailed Test Results</h4>
+              <table border="1" cellpadding="8" style="border-collapse:collapse;width:100%;font-size:13px;">
+                <tr style="background:#f0f0f0;"><th>Test Name</th><th>Status</th></tr>
+                ${{ steps.parse_results.outputs.html_rows }}
+              </table>
+
+              <br/>
+              <p>
+                📈 <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure/${{ env.REPORT_DATE }}/index.html">
+                  View Full Allure Report
+                </a> |
+                🧾 <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+                  View Workflow Run
+                </a>
+              </p>
+
+              <hr/>
+              <p style="font-size:12px;color:gray;text-align:right;">
+                Triggered by: <b>${{ github.actor }}</b><br/>
+                Repository: <b>${{ github.repository }}</b>
+              </p>
+            </div>

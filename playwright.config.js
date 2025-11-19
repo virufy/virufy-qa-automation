@@ -17,15 +17,16 @@ export default defineConfig({
     retries: 0,
     reporter: [
         ['list'],
-        ['html', { outputFolder: 'playwright-report', open: 'never' }],
-        ['allure-playwright', { outputFolder: 'allure-results' }]
+        //['html', { outputFolder: 'playwright-report', open: 'never' }],
+        ['allure-playwright', { outputFolder: 'allure-results' }],
+        ['json', { outputFile: 'json-report.json' }]
     ],
     use: {
         headless: true,
-        baseURL: BASE_URL, // <-- Use the constant
-        screenshot: 'only-on-failure',
+        baseURL: BASE_URL, 
+        trace: 'on-first-retry',   
         video: 'retain-on-failure',
-        trace: 'retain-on-failure'
+        screenshot: 'only-on-failure'
     },
     projects: (() => {
         const browser = process.env.BROWSER || 'chromium';
