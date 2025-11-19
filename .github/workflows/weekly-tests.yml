@@ -1,9 +1,9 @@
-name: Playwright Weekly CI Tests (Email Summary + GitHub Pages)
+name: Playwright Daily CI Tests (Email Summary + GitHub Pages)
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 1"  # Every Monday 8 AM UTC
+    - cron: "0 8 * * *"  # Every day 8 AM UTC
   push:
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: npx playwright test tests/smoke || true
+        run: npx playwright test tests/smoke tests/redirects/uiRedirects.spec.js || true
 
       - name: Install Java (for Allure)
         run: |
@@ -54,7 +54,7 @@ jobs:
           let rows = '';
 
           if (!fs.existsSync('json-report.json')) {
-            console.log('⚠️ No json-report.json found');
+            console.log(' No json-report.json found');
             fs.appendFileSync(out, `passed=0\nfailed=0\ntotal=0\nhtml_rows=No test results found.\n`);
             process.exit(0);
           }
@@ -161,7 +161,7 @@ jobs:
           html_body: |
             <div style="font-family:Arial,sans-serif;">
               <h2 style="background:#004aad;color:white;padding:12px;text-align:center;border-radius:6px 6px 0 0;">
-                Virufy QA Automation Report — ${{ env.REPORT_DAY }}
+                Virufy QA Automation Report - ${{ env.REPORT_DAY }}
               </h2>
 
 
