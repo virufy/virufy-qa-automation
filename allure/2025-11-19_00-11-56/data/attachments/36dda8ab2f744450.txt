@@ -1,0 +1,5 @@
+
+ → Checking redirect: https://virufy.org/join-jp
+   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&dsh=S2049005779%3A1763511097301737&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&ifkv=ARESoU17Ss0j5OmvHGT36LfIywM2Rw43Z8POkIz2OGpxcv389bm0W2t6u4gi-D1qNCc46NsQgbLIQQ&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin
+   → Page Title: Google Forms: Sign-in
+ Verified Google redirect via title check

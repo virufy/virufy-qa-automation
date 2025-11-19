@@ -1,0 +1,6 @@
+
+ → Checking redirect: https://virufy.org/privacy_policy
+   → Final URL: https://virufy.org/en/privacy-policy/
+   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare
+   → Found Heading: VirufyPrivacy Policy
+ Redirect and content verified successfully

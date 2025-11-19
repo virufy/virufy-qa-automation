@@ -1,0 +1,6 @@
+
+ → Checking redirect: https://virufy.org/null
+   → Final URL: https://virufy.org/en/
+   → Page Title: Virufy | AI-Powered Respiratory Health Screening
+   → Found Heading: Welcome to Virufy
+ Redirect and content verified successfully
