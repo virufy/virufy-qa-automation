@@ -1,0 +1,6 @@
+
+ → (8) Checking redirect: https://virufy.org/donate
+   → Final URL: https://www.gofundme.com/f/donate-virufy
+   → Page Title: Fundraiser by Amil Khanzada : Donate to Virufy: Revolutionizing COVID-19 Detection
+   → Found Heading: Donate to Virufy: Revolutionizing COVID-19 Detection
+ ✔ Redirect validated successfully (8/20)
