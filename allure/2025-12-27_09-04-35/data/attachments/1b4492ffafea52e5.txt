@@ -1,0 +1,3 @@
+
+ → (18) Checking redirect: https://virufy.org/virumap-slides-jp
+   → Final URL: https://virufy.org/virumap-slides-jp/
