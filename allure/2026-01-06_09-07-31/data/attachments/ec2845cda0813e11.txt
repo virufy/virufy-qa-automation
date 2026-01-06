@@ -1,0 +1,6 @@
+
+ → (18) Checking redirect: https://virufy.org/virumap-slides-jp
+   → Final URL: https://docs.google.com/presentation/d/1GqNirFzOrWsLoLaH5hSe8YVXTMMrWZ1gW5d56jICs30/edit?slide=id.g2de78196a55_0_0#slide=id.g2de78196a55_0_0
+   → Page Title: ViruMap Deck - Japanese (Public) - Google කදා
+ Verified Google redirect via title check
+ ✔ Redirect validated successfully (18/20)
