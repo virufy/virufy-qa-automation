@@ -1,0 +1,6 @@
+
+ → (7) Checking redirect: https://virufy.org/halfmydaf
+   → Final URL: https://virufy.org/en/halfmydaf/
+   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare
+   → Found Heading: Virufy: Participation in #HalfMyDAF 2025 Initiative
+ ✔ Redirect validated successfully (7/20)
