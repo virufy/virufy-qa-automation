@@ -6,7 +6,7 @@ export const redirects = [
     { from: 'fukuoka', to: 'en/fukuoka', titleKeyword: 'Virufy: Developing Cutting Edge AI Technology in Healthcare' },
     { from: 'join', to: 'en/join-us', titleKeyword: 'Virufy: Developing Cutting Edge AI Technology in Healthcare' },
     { from: 'halfmydaf', to: 'en/halfmydaf', titleKeyword: 'Virufy: Developing Cutting Edge AI Technology in Healthcare' },
-    { from: 'donate', to: 'https://www.gofundme.com/f/donate-virufy', isExternal: true, titleKeyword: 'Fundraiser by Amil Khanzada : Donate to Virufy: Revolutionizing COVID-19 Detection' },
+    { from: 'donate', to: 'https://www.gofundme.com/f/donate-virufy', isExternal: true, titleKeyword: 'Fundraiser by Amil Khanzada : Donate to Virufy: Revolutionizing COVID-19 Detection'},
     { from: 'dubai-jp', to: 'en/dubai-jp', titleKeyword: 'Virufy: Developing Cutting Edge AI Technology in Healthcare' },
     { from: 'news/uae-adghw-apr-2025', to: 'en/news/uae-adghw-apr-2025', titleKeyword: 'Virufy: Developing Cutting Edge AI Technology in Healthcare' },
     { from: 'paper', to: 'en/paper', titleKeyword: 'Virufy: Developing Cutting Edge AI Technology in Healthcare' },

@@ -92,7 +92,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2487,
+                      "duration": 2611,
                       "errors": [],
                       "stdout": [
                         {
@@ -113,7 +113,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:42.293Z",
+                      "startTime": "2026-01-09T19:39:22.361Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -142,7 +142,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1929,
+                      "duration": 2091,
                       "errors": [],
                       "stdout": [
                         {
@@ -163,7 +163,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:45.086Z",
+                      "startTime": "2026-01-09T19:39:25.279Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -192,7 +192,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1846,
+                      "duration": 1921,
                       "errors": [],
                       "stdout": [
                         {
@@ -213,7 +213,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:47.022Z",
+                      "startTime": "2026-01-09T19:39:27.376Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -242,7 +242,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2269,
+                      "duration": 2208,
                       "errors": [],
                       "stdout": [
                         {
@@ -263,7 +263,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:48.873Z",
+                      "startTime": "2026-01-09T19:39:29.303Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -292,7 +292,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2108,
+                      "duration": 2487,
                       "errors": [],
                       "stdout": [
                         {
@@ -313,7 +313,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:51.147Z",
+                      "startTime": "2026-01-09T19:39:31.516Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -342,7 +342,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1984,
+                      "duration": 2201,
                       "errors": [],
                       "stdout": [
                         {
@@ -363,7 +363,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:53.260Z",
+                      "startTime": "2026-01-09T19:39:34.009Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -392,7 +392,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2106,
+                      "duration": 2076,
                       "errors": [],
                       "stdout": [
                         {
@@ -413,7 +413,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:55.250Z",
+                      "startTime": "2026-01-09T19:39:36.219Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -442,7 +442,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3278,
+                      "duration": 4616,
                       "errors": [],
                       "stdout": [
                         {
@@ -455,7 +455,7 @@
                           "text": "   → Page Title: Fundraiser by Amil Khanzada : Donate to Virufy: Revolutionizing COVID-19 Detection\n"
                         },
                         {
-                          "text": "   → Found Heading: Donate to Virufy: Revolutionizing COVID-19 Detection\n"
+                          "text": "   → Found Heading: $25 raised of 4K\n"
                         },
                         {
                           "text": " ✔ Redirect validated successfully (8/20)\n"
@@ -463,7 +463,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:20:57.361Z",
+                      "startTime": "2026-01-09T19:39:38.307Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -492,7 +492,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2384,
+                      "duration": 2646,
                       "errors": [],
                       "stdout": [
                         {
@@ -513,7 +513,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:00.646Z",
+                      "startTime": "2026-01-09T19:39:42.934Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -542,7 +542,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2035,
+                      "duration": 2190,
                       "errors": [],
                       "stdout": [
                         {
@@ -563,7 +563,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:03.036Z",
+                      "startTime": "2026-01-09T19:39:45.593Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -592,7 +592,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2001,
+                      "duration": 2043,
                       "errors": [],
                       "stdout": [
                         {
@@ -613,7 +613,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:05.078Z",
+                      "startTime": "2026-01-09T19:39:47.793Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -642,7 +642,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2008,
+                      "duration": 2409,
                       "errors": [],
                       "stdout": [
                         {
@@ -663,7 +663,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:07.084Z",
+                      "startTime": "2026-01-09T19:39:49.842Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -692,7 +692,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1993,
+                      "duration": 2091,
                       "errors": [],
                       "stdout": [
                         {
@@ -713,7 +713,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:09.103Z",
+                      "startTime": "2026-01-09T19:39:52.259Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -742,7 +742,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1916,
+                      "duration": 2159,
                       "errors": [],
                       "stdout": [
                         {
@@ -763,7 +763,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:11.102Z",
+                      "startTime": "2026-01-09T19:39:54.356Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -792,7 +792,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2636,
+                      "duration": 2578,
                       "errors": [],
                       "stdout": [
                         {
@@ -813,7 +813,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:13.023Z",
+                      "startTime": "2026-01-09T19:39:56.521Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -842,7 +842,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2564,
+                      "duration": 2634,
                       "errors": [],
                       "stdout": [
                         {
@@ -863,7 +863,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:15.664Z",
+                      "startTime": "2026-01-09T19:39:59.109Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -892,7 +892,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2873,
+                      "duration": 4730,
                       "errors": [],
                       "stdout": [
                         {
@@ -913,7 +913,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:18.233Z",
+                      "startTime": "2026-01-09T19:40:01.747Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -942,7 +942,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3792,
+                      "duration": 3418,
                       "errors": [],
                       "stdout": [
                         {
@@ -963,7 +963,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:21.113Z",
+                      "startTime": "2026-01-09T19:40:06.483Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -992,14 +992,14 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3033,
+                      "duration": 3290,
                       "errors": [],
                       "stdout": [
                         {
                           "text": "\n → (19) Checking redirect: https://virufy.org/join-jp\n"
                         },
                         {
-                          "text": "   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&dsh=S-1591081855%3A1763515285995822&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&ifkv=ARESoU3vOi2YpahpGVIAd3YDDVjX0i8uE8rE5KuwI6hgyGzJgLXQUuRgkIlrt5aTQGn0QVZEmHTC&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin\n"
+                          "text": "   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&dsh=S1527523296%3A1767987611009359&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSe_7H0GQnV4iuN9eSu87r0sw4f7HwONLrArxWGHunfVOrr9BQ%2Fviewform%3Fusp%3Dsend_form&ifkv=Ac2yZaWlxA15FRe__ynrlTPlChf8Weeegb1MjVz64NtfEoRP1eisvHrhETdBaR8Yk0YXCQ3sGgMM&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin\n"
                         },
                         {
                           "text": "   → Page Title: Google Forms: Sign-in\n"
@@ -1013,7 +1013,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:24.911Z",
+                      "startTime": "2026-01-09T19:40:09.910Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1042,14 +1042,14 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2581,
+                      "duration": 2882,
                       "errors": [],
                       "stdout": [
                         {
                           "text": "\n → (20) Checking redirect: https://virufy.org/apply\n"
                         },
                         {
-                          "text": "   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&dsh=S-854396400%3A1763515288653876&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&ifkv=ARESoU3buAy-WFHOEWdEDGbjHSfGLuXTfxVJsyHqzAYmdXZpbA8Bg3f5SqUSBW8Xmwr92ajEk2g88A&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin\n"
+                          "text": "   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&dsh=S-1054728936%3A1767987613923689&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&ifkv=Ac2yZaXm6jLVOHxwVr-lTXokF_RpAcCbjflX7SLQJUa9QUdUCS3T3yT84lceXT8fLrf7SzbABp1YBw&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin\n"
                         },
                         {
                           "text": "   → Page Title: Google Forms: Sign-in\n"
@@ -1063,7 +1063,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-19T01:21:27.949Z",
+                      "startTime": "2026-01-09T19:40:13.208Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1083,8 +1083,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-11-19T01:20:41.942Z",
-    "duration": 48656.786,
+    "startTime": "2026-01-09T19:39:22.023Z",
+    "duration": 54135.819,
     "expected": 20,
     "skipped": 0,
     "unexpected": 0,
