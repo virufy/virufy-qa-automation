@@ -1,0 +1,125 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e5]:
+      - img "Virufy logo" [ref=e7]
+      - paragraph [ref=e9]: We access and store non-sensitive information from your device, like cookies or a unique device identifier, and process personal data like IP addresses for analytics purposes. You may opt out of data processing that isn’t essential to the core functionality of this site by clicking on “Decline and close” on this window.
+      - generic [ref=e10]:
+        - button "Accept and close" [ref=e11] [cursor=pointer]
+        - button "Decline and close" [ref=e12] [cursor=pointer]
+    - navigation [ref=e14]:
+      - generic [ref=e15]:
+        - link "Virufy logo" [ref=e17] [cursor=pointer]:
+          - /url: /en/
+          - img "Virufy logo" [ref=e18] [cursor=pointer]
+        - list [ref=e21]:
+          - generic [ref=e22]:
+            - listitem [ref=e23]:
+              - link "Home" [ref=e25] [cursor=pointer]:
+                - /url: /en/
+            - listitem [ref=e26]:
+              - link "What We Do" [ref=e28] [cursor=pointer]:
+                - /url: /en/ai/
+            - listitem [ref=e29]:
+              - link "Who We Are" [ref=e31] [cursor=pointer]:
+                - /url: /en/story/
+            - listitem [ref=e32]:
+              - link "Media" [ref=e34] [cursor=pointer]:
+                - /url: /en/news/
+            - listitem [ref=e35]:
+              - link "FAQ" [ref=e37] [cursor=pointer]:
+                - /url: /en/faq/
+            - listitem [ref=e38]:
+              - generic [ref=e40]:
+                - textbox "Search..." [ref=e41]
+                - generic [ref=e42]:
+                  - img
+            - listitem [ref=e43]:
+              - button "en flag EN arrow down icon" [ref=e45] [cursor=pointer]:
+                - img "en flag" [ref=e46] [cursor=pointer]
+                - text: EN
+                - img "arrow down icon" [ref=e47] [cursor=pointer]
+          - generic [ref=e48]:
+            - listitem [ref=e49]:
+              - link "Join Us" [ref=e50] [cursor=pointer]:
+                - /url: /en/join-us/
+                - button "Join Us" [ref=e51] [cursor=pointer]
+            - listitem [ref=e52]:
+              - link "Support Us" [ref=e53] [cursor=pointer]:
+                - /url: /en/donate/
+                - button "Support Us" [ref=e54] [cursor=pointer]
+    - generic [ref=e56]:
+      - generic [ref=e58]:
+        - img "Donate background" [ref=e60]
+        - generic [ref=e63]:
+          - heading "Together, we can revolutionize global respiratory health." [level=1] [ref=e64]
+          - paragraph [ref=e65]: Every contribution brings us closer to delivering AI-powered diagnostic tools to patients and communities in need.
+      - generic [ref=e68]:
+        - heading "Your gift creates a lasting impact." [level=2] [ref=e69]
+        - paragraph [ref=e70]: Every donation helps Virufy bring accessible respiratory health technology to people and communities that need it most. By supporting us, you’re accelerating innovation and giving patients the tools to protect their health.
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - generic [ref=e74]:
+              - heading "Expand Access" [level=3] [ref=e75]:
+                - text: Expand Access
+                - img [ref=e76]
+              - paragraph [ref=e79]: Bring AI-powered health screening tools to underserved communities worldwide.
+            - generic [ref=e81]:
+              - heading "Advance Research" [level=3] [ref=e82]:
+                - text: Advance Research
+                - img [ref=e83]
+              - paragraph [ref=e87]: Support cutting-edge studies that improve early detection and treatment of respiratory illness.
+            - generic [ref=e89]:
+              - heading "Empower Patients" [level=3] [ref=e90]:
+                - text: Empower Patients
+                - img [ref=e91]
+              - paragraph [ref=e94]: Help individuals take control of their health with accessible, science-driven insights.
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - heading "Choose how you’d like to give:" [level=3] [ref=e97]
+              - paragraph [ref=e98]: Your support matters, no matter the method. Select a donation option below to get started
+            - generic [ref=e99]:
+              - heading "Donate via GoFundMe" [level=4] [ref=e100]
+              - paragraph [ref=e101]: Contribute to our active campaign and help us reach more people, faster.
+              - link "GoFundMe" [ref=e102] [cursor=pointer]:
+                - /url: https://www.gofundme.com/f/donate-virufy
+            - generic [ref=e103]:
+              - heading "Donate via PayPal" [level=4] [ref=e104]
+              - paragraph [ref=e105]: Make a secure one-time or recurring donation directly through PayPal.
+              - link "PayPal" [ref=e106] [cursor=pointer]:
+                - /url: https://www.paypal.com/us/fundraiser/charity/4348461
+    - generic [ref=e109]:
+      - separator [ref=e111]
+      - generic [ref=e112]:
+        - link "Cookie Policy" [ref=e113] [cursor=pointer]:
+          - /url: /en/cookie-policy/
+        - link "Privacy Policy" [ref=e114] [cursor=pointer]:
+          - /url: /en/privacy-policy/
+        - link "Do Not Sell My Personal Info" [ref=e115] [cursor=pointer]:
+          - /url: /en/do-not-sell-my-data/
+        - link "Intellectual Property" [ref=e116] [cursor=pointer]:
+          - /url: /en/Intellectual-Property/
+      - generic [ref=e117]:
+        - link "Instagram icon" [ref=e118] [cursor=pointer]:
+          - /url: https://www.instagram.com/virufy/
+          - img "Instagram icon" [ref=e119] [cursor=pointer]
+        - link "LinkedIn icon" [ref=e120] [cursor=pointer]:
+          - /url: https://www.linkedin.com/company/virufy/
+          - img "LinkedIn icon" [ref=e121] [cursor=pointer]
+        - link "X icon" [ref=e122] [cursor=pointer]:
+          - /url: https://x.com/VirufyOrg
+          - img "X icon" [ref=e123] [cursor=pointer]
+        - link "Youtube icon" [ref=e124] [cursor=pointer]:
+          - /url: https://www.youtube.com/@virufy1993
+          - img "Youtube icon" [ref=e125] [cursor=pointer]
+      - link "GuideStar Profile" [ref=e127] [cursor=pointer]:
+        - /url: https://www.guidestar.org/profile/shared/f0cf98a8-3b5a-495f-86c0-d2d58564086c
+        - img "GuideStar Profile" [ref=e128] [cursor=pointer]
+      - generic [ref=e129]:
+        - paragraph [ref=e131]: Nonprofit Status
+        - paragraph [ref=e133]: Virufy is a California nonprofit corporation recognized by the United States Internal Revenue Service (IRS) as a tax-exempt public charity under Section 501(c)(3) of the Internal Revenue Code.
+        - paragraph [ref=e135]: ©2025 Virufy | VIRUFY is a trademark of The Covid Detection Foundation, a California nonprofit corporation | All rights reserved
+  - alert [ref=e136]
+```

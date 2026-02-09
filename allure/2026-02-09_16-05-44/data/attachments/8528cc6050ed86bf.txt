@@ -1,0 +1,3 @@
+
+ → (17) Checking redirect: https://virufy.org/virumap-slides
+   → Final URL: about:blank

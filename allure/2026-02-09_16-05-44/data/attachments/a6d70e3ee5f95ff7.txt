@@ -1,0 +1,3 @@
+
+ → (12) Checking redirect: https://virufy.org/press
+   → Final URL: https://virufy.org/press/
