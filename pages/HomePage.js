@@ -7,8 +7,8 @@ export class HomePage extends BasePage {
 
         // --- Navigation ---
         this.homeLink = page.getByRole('link', { name: /^Home$/i });
-        this.technologyLink = page.getByRole('link', { name: /^Technology$/i });
-        this.aboutLink = page.getByRole('link', { name: /^About Us$/i });
+        this.technologyLink = page.getByRole('link', { name: /^What We Do$/i });
+        this.aboutLink = page.getByRole('link', { name: /^Who We Are$/i });
         this.mediaLink = page.getByRole('link', { name: /^Media$/i });
         this.faqLink = page.getByRole('link', { name: /^FAQ$/i });
 
@@ -55,7 +55,7 @@ export class HomePage extends BasePage {
     async verifyNavigationLinks() {
         const links = [
             { locator: this.homeLink, expected: '/en/' },
-            { locator: this.technologyLink, expected: '/en/ai/' },
+            { locator: this.technologyLink, expected: '/en/ai/' },   
             { locator: this.aboutLink, expected: '/en/story/' },
             { locator: this.mediaLink, expected: '/en/news/' },
             { locator: this.faqLink, expected: '/en/faq/' },
