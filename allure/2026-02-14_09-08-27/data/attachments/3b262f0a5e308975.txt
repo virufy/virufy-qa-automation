@@ -1,0 +1,6 @@
+
+ → (8) Checking redirect: https://virufy.org/donate
+   → Final URL: https://virufy.org/en/donate/
+   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare
+   → Found Heading: Together, we can revolutionize global respiratory health.
+ ✔ Redirect validated successfully (8/20)
