@@ -5,6 +5,8 @@ on:
   schedule:
     - cron: "0 9 * * *"  # Every day 8 AM UTC
   push:
+    branches:
+      - main
 
 jobs:
   run-playwright:
@@ -31,7 +33,7 @@ jobs:
         continue-on-error: true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: npx playwright test tests/smoke tests/redirects/uiRedirects.spec.js || true
+        run: npx playwright test tests/smoke tests/redirects/uiRedirects.spec.js
 
       - name: Install Java (for Allure)
         run: |
@@ -46,39 +48,63 @@ jobs:
 
       - name: Parse JSON test results
         id: parse_results
+        if: always()
         run: |
-          node - <<'EOF'
+          node --input-type=module - <<'EOF'
           import fs from 'fs';
           const out = process.env.GITHUB_OUTPUT;
           let passed = 0, failed = 0, total = 0;
           let rows = '';
 
+          const writeBrokenOutputs = (message) => {
+            const htmlRow = `<tr><td colspan="2">${message}</td></tr>`;
+            fs.appendFileSync(out, `passed=0\nfailed=0\ntotal=0\nslack_status=BROKEN\nhtml_rows<<EOF\n${htmlRow}\nEOF\n`);
+          };
+
           if (!fs.existsSync('json-report.json')) {
             console.log(' No json-report.json found');
-            fs.appendFileSync(out, `passed=0\nfailed=0\ntotal=0\nhtml_rows=No test results found.\n`);
+            writeBrokenOutputs('No test results found.');
             process.exit(0);
           }
 
-          const data = JSON.parse(fs.readFileSync('json-report.json', 'utf8'));
+          let data;
+          try {
+            data = JSON.parse(fs.readFileSync('json-report.json', 'utf8'));
+          } catch (error) {
+            console.log(` Failed to parse json-report.json: ${error.message}`);
+            writeBrokenOutputs('Test results could not be parsed.');
+            process.exit(0);
+          }
 
-          const collect = (suite) => {
-            (suite.specs || []).forEach(spec => {
-              (spec.tests || []).forEach(test => {
-                const title = spec.title || test.title || 'Untitled';
-                const status = test?.outcome || test?.results?.at(-1)?.status || 'unknown';
-                total++;
-                let color = 'gray';
-                if (status === 'expected' || status === 'passed') { passed++; color='green'; }
-                else if (status === 'unexpected' || status === 'failed') { failed++; color='red'; }
-                rows += `<tr><td>${title}</td><td style="color:${color};font-weight:bold;">${status}</td></tr>`;
+          try {
+            const collect = (suite) => {
+              (suite.specs || []).forEach(spec => {
+                (spec.tests || []).forEach(test => {
+                  const title = spec.title || test.title || 'Untitled';
+                  const status = test?.outcome || test?.results?.at(-1)?.status || 'unknown';
+                  total++;
+                  let color = 'gray';
+                  if (status === 'expected' || status === 'passed') { passed++; color='green'; }
+                  else {
+                    failed++;
+                    color='red';
+                  }
+                  rows += `<tr><td>${title}</td><td style="color:${color};font-weight:bold;">${status}</td></tr>`;
+                });
               });
-            });
-            (suite.suites || []).forEach(collect);
-          };
-          (data.suites || []).forEach(collect);
+              (suite.suites || []).forEach(collect);
+            };
+            (data.suites || []).forEach(collect);
+          } catch (error) {
+            console.log(` Failed to process json-report.json: ${error.message}`);
+            writeBrokenOutputs('Test results could not be processed.');
+            process.exit(0);
+          }
 
           const htmlTable = rows || '<tr><td colspan="2">No tests found</td></tr>';
+          const slackStatus = total === 0 ? 'NO RESULTS' : failed > 0 ? 'FAILED' : 'PASSED';
           fs.appendFileSync(out, `passed=${passed}\nfailed=${failed}\ntotal=${total}\n`);
+          fs.appendFileSync(out, `slack_status=${slackStatus}\n`);
           fs.appendFileSync(out, `html_rows<<EOF\n${htmlTable}\nEOF\n`);
           EOF
 
@@ -196,3 +222,87 @@ jobs:
                 Repository: <b>${{ github.repository }}</b>
               </p>
             </div>
+
+      # --- Send Slack Summary ---
+      - name: Send Slack summary
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REPORT_DAY: ${{ env.REPORT_DAY }}
+          TOTAL: ${{ steps.parse_results.outputs.total }}
+          PASSED: ${{ steps.parse_results.outputs.passed }}
+          FAILED: ${{ steps.parse_results.outputs.failed }}
+          SLACK_STATUS: ${{ steps.parse_results.outputs.slack_status }}
+          ALLURE_REPORT_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure/${{ env.REPORT_DATE }}/index.html
+          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node --input-type=module - <<'EOF'
+          const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+
+          if (!webhookUrl) {
+            console.log('No SLACK_WEBHOOK_URL configured; skipping Slack notification.');
+            process.exit(0);
+          }
+
+          const status = process.env.SLACK_STATUS;
+          const failed = parseInt(process.env.FAILED, 10);
+
+          const statusEmoji = status === 'PASSED' ? ':white_check_mark:'
+                            : status === 'FAILED' ? ':x:'
+                            : ':warning:';
+
+          const payload = {
+            blocks: [
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: `*Virufy QA Daily Report — ${process.env.REPORT_DAY}*`
+                }
+              },
+              { type: 'divider' },
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: `${statusEmoji}  *${status}* — ${process.env.TOTAL} tests`
+                }
+              },
+              {
+                type: 'section',
+                fields: [
+                  { type: 'mrkdwn', text: `:large_green_circle:  *Passed*\n${process.env.PASSED}` },
+                  { type: 'mrkdwn', text: `${failed > 0 ? ':red_circle:' : ':white_circle:'}  *Failed*\n${process.env.FAILED}` },
+                ]
+              },
+              {
+                type: 'actions',
+                elements: [
+                  {
+                    type: 'button',
+                    text: { type: 'plain_text', emoji: true, text: 'View Allure Report' },
+                    style: 'primary',
+                    url: process.env.ALLURE_REPORT_URL
+                  },
+                  {
+                    type: 'button',
+                    text: { type: 'plain_text', emoji: true, text: 'View Workflow Run' },
+                    url: process.env.WORKFLOW_RUN_URL
+                  }
+                ]
+              },
+              { type: 'divider' }
+            ]
+          };
+
+          const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`Slack webhook request failed: ${response.status} ${response.statusText} ${body}`);
+          }
+          EOF
