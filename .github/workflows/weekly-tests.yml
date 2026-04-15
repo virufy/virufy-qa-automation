@@ -5,6 +5,8 @@ on:
   schedule:
     - cron: "0 9 * * *"  # Every day 8 AM UTC
   push:
+    branches:
+      - main
 
 jobs:
   run-playwright:
@@ -242,18 +244,55 @@ jobs:
             process.exit(0);
           }
 
+          const status = process.env.SLACK_STATUS;
+          const failed = parseInt(process.env.FAILED, 10);
+
+          const statusEmoji = status === 'PASSED' ? ':white_check_mark:'
+                            : status === 'FAILED' ? ':x:'
+                            : ':warning:';
+
           const payload = {
-            text: [
-              `Virufy QA Daily Report - ${process.env.REPORT_DAY}`,
-              '',
-              `Status: ${process.env.SLACK_STATUS}`,
-              `Total: ${process.env.TOTAL}`,
-              `Passed: ${process.env.PASSED}`,
-              `Failed: ${process.env.FAILED}`,
-              '',
-              `Allure Report: ${process.env.ALLURE_REPORT_URL}`,
-              `Workflow Run: ${process.env.WORKFLOW_RUN_URL}`,
-            ].join('\n'),
+            blocks: [
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: `*Virufy QA Daily Report — ${process.env.REPORT_DAY}*`
+                }
+              },
+              { type: 'divider' },
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: `${statusEmoji}  *${status}* — ${process.env.TOTAL} tests`
+                }
+              },
+              {
+                type: 'section',
+                fields: [
+                  { type: 'mrkdwn', text: `:large_green_circle:  *Passed*\n${process.env.PASSED}` },
+                  { type: 'mrkdwn', text: `${failed > 0 ? ':red_circle:' : ':white_circle:'}  *Failed*\n${process.env.FAILED}` },
+                ]
+              },
+              {
+                type: 'actions',
+                elements: [
+                  {
+                    type: 'button',
+                    text: { type: 'plain_text', emoji: true, text: 'View Allure Report' },
+                    style: 'primary',
+                    url: process.env.ALLURE_REPORT_URL
+                  },
+                  {
+                    type: 'button',
+                    text: { type: 'plain_text', emoji: true, text: 'View Workflow Run' },
+                    url: process.env.WORKFLOW_RUN_URL
+                  }
+                ]
+              },
+              { type: 'divider' }
+            ]
           };
 
           const response = await fetch(webhookUrl, {
