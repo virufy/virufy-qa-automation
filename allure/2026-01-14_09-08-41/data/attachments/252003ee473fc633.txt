@@ -1,3 +1,0 @@
-
- → (13) Checking redirect: https://virufy.org/privacy_policy
-   → Final URL: about:blank

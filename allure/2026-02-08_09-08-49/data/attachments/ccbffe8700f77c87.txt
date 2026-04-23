@@ -1,3 +1,0 @@
-
- → (8) Checking redirect: https://virufy.org/donate
-   → Final URL: https://virufy.org/en/donate/
