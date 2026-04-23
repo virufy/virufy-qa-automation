@@ -298,6 +298,12 @@ jobs:
                   }
                 ]
               },
+              {
+                type: 'context',
+                elements: [
+                  { type: 'mrkdwn', text: '⏳ Allure report may take ~5 min to publish after this notification' }
+                ]
+              },
               { type: 'divider' }
             ]
           };
