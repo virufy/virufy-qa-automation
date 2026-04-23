@@ -135,6 +135,20 @@ jobs:
           rm -f json-report.json
           git checkout gh-pages
 
+          # Delete reports older than 30 days
+          if [ -d allure ]; then
+            CUTOFF=$(date -u -d "30 days ago" '+%Y-%m-%d')
+            for d in allure/*/; do
+              dir=$(basename "$d")
+              report_date=$(echo "$dir" | cut -d'_' -f1)
+              if [[ "$report_date" < "$CUTOFF" ]]; then
+                echo "Deleting old report: $dir"
+                rm -rf "allure/$dir"
+                git rm -rf "allure/$dir" 2>/dev/null || true
+              fi
+            done
+          fi
+
           mkdir -p tmp-index
           INDEX_FILE="$(pwd)/tmp-index/index.html"
 
@@ -301,7 +315,7 @@ jobs:
               {
                 type: 'context',
                 elements: [
-                  { type: 'mrkdwn', text: '⏳ Allure report may take ~5 min to publish after this notification' }
+                  { type: 'mrkdwn', text: '⏳ Allure report may take ~1 min to publish after this notification' }
                 ]
               },
               { type: 'divider' }
