@@ -260,6 +260,13 @@ jobs:
                   text: `*Virufy QA Daily Report — ${process.env.REPORT_DAY}*`
                 }
               },
+              ...(status === 'FAILED' ? [{
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: `<!channel> Tests have failed and need attention.`
+                }
+              }] : []),
               { type: 'divider' },
               {
                 type: 'section',
