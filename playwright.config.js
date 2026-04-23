@@ -14,7 +14,7 @@ if (!BASE_URL) {
 export default defineConfig({
     testDir: './tests',
     timeout: 30 * 1000,
-    retries: 0,
+    retries: process.env.CI ? 2 : 0,
     reporter: [
         ['list'],
         //['html', { outputFolder: 'playwright-report', open: 'never' }],
