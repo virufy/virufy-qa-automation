@@ -34,8 +34,4 @@ test.describe('Homepage Smoke Tests', () => {
         await allure.tag('smoke');
         await home.verifyFooterLinks();
     });
-
-    test('smoke: deliberate failure test', async () => {
-        throw new Error('Deliberate failure — for pipeline testing');
-    });
 });
