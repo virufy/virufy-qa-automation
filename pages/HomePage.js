@@ -36,9 +36,9 @@ export class HomePage extends BasePage {
 
     async navigateToHome() {
         await this.page.goto('/');
-        // Handle popup IMMEDIATELY after page loads, before anything else
         await this.acceptCookies();
         await this.waitForPageLoad();
+        await this.acceptCookies();
     }
 
     async verifyPageTitle(expectedTitle) {

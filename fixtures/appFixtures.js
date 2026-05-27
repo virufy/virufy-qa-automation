@@ -10,6 +10,7 @@ export const test = base.extend({
         // Automatically load the app before each test
         await page.goto('/');
         await homePage.waitForPageLoad();
+        await homePage.acceptCookies();
 
         // Pass the initialized object to the test
         await use(homePage);

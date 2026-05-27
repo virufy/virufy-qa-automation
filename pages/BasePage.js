@@ -21,7 +21,19 @@ export class BasePage {
 
     async acceptCookies() {
         try {
-            // Check immediately for popup without waiting
+            // Dismiss the overlay modal via JS click to avoid Playwright coverage/actionability issues
+            const dismissed = await this.page.evaluate(() => {
+                const btn = document.querySelector('button[aria-label="Close modal"]');
+                if (btn) { btn.click(); return true; }
+                return false;
+            });
+            if (dismissed) await this.page.waitForTimeout(500);
+        } catch (error) {
+            // Continue if no overlay modal found
+        }
+
+        try {
+            // Check immediately for cookie popup without waiting
             const cookieButtons = [
                 this.page.getByRole('button', { name: 'Accept and close' }),
                 this.page.getByRole('button', { name: 'Accept' }),
@@ -29,7 +41,7 @@ export class BasePage {
             ];
 
             for (const button of cookieButtons) {
-                if (await button.isVisible({ timeout: 500 })) {
+                if (await button.isVisible()) {
                     await button.click();
                     // Wait for popup to disappear before continuing
                     await this.page.waitForTimeout(300);
@@ -40,7 +52,7 @@ export class BasePage {
             // If no button found immediately, wait a bit and try again
             await this.page.waitForTimeout(1000);
             for (const button of cookieButtons) {
-                if (await button.isVisible({ timeout: 1000 })) {
+                if (await button.isVisible()) {
                     await button.click();
                     await this.page.waitForTimeout(300);
                     return;
