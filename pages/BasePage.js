@@ -87,4 +87,9 @@ export class BasePage {
     async assertPageTitle(expectedTitle) {
         await expect(this.page).toHaveTitle(expectedTitle);
     }
+
+    // assert an element has the expected text content
+    async assertElementText(locator, expectedText) {
+        await expect(locator).toHaveText(expectedText);
+    }
 }

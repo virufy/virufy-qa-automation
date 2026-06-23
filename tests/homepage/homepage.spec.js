@@ -3,14 +3,14 @@ import * as allure from "allure-js-commons";
 
 test.describe('Homepage Validation', () => {
 
-    test('should load homepage with correct title', async ({ home }) => {
+    test('should load homepage with correct title', { tag: ['@smoke'] }, async ({ home }) => {
         await allure.feature('Homepage');
         await allure.severity('critical');
         await allure.tag('homepage');
         await home.verifyPageTitle('Virufy | AI-Powered Respiratory Health Screening');
     });
 
-    test('should display main content sections', async ({ home }) => {
+    test('should display main content sections', { tag: ['@smoke'] }, async ({ home }) => {
         await allure.feature('Homepage');
         await allure.severity('critical');
         await allure.tag('homepage');
@@ -21,7 +21,7 @@ test.describe('Homepage Validation', () => {
         ]);
     });
 
-    test('should have working main navigation links', async ({ home }) => {
+    test('should have working main navigation links', { tag: ['@smoke'] }, async ({ home }) => {
         await allure.feature('Homepage');
         await allure.severity('critical');
         await allure.tag('homepage');
@@ -42,7 +42,7 @@ test.describe('Homepage Validation', () => {
         await home.verifyTopActionButtons();
     });
 
-    test('should have working footer section and links', async ({ home }) => {
+    test('should have working footer section and links', { tag: ['@smoke'] }, async ({ home }) => {
         await allure.feature('Homepage');
         await allure.severity('critical');
         await allure.tag('homepage');

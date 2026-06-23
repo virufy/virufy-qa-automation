@@ -1,5 +1,6 @@
 import { test as base } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
+import { WhatWeDoPage } from '../pages/WhatWeDoPage';
 
 // Extend the base Playwright test
 export const test = base.extend({
@@ -14,5 +15,11 @@ export const test = base.extend({
 
         // Pass the initialized object to the test
         await use(homePage);
+    },
+
+    whatWeDo: async ({ page }, use) => {
+        const whatWeDoPage = new WhatWeDoPage(page);
+        await whatWeDoPage.navigateToWhatWeDo();
+        await use(whatWeDoPage);
     },
 });

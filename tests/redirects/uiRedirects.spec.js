@@ -20,7 +20,7 @@ test.describe('UI Redirect and Page Validation Suite', () => {
         const counter = index + 1;
         const total = redirects.length;
 
-        test(`[${counter}/${total}] Validate redirect: /${from}`, async ({ page }) => {
+        test(`[${counter}/${total}] Validate redirect: /${from}`, { tag: ['@smoke'] }, async ({ page }) => {
             const startUrl = joinUrl(BASE_URL, from);
             const isExternal = external || (to.startsWith('http') && !to.includes('virufy.org'));
 
