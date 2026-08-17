@@ -1,6 +1,0 @@
-
- → (20) Checking redirect: https://virufy.org/apply
-   → Final URL: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&dsh=S388015621%3A1784280888385215&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSdmlecMmXr3FqO1HajJFBmfpji8Blyjfs9U5jK3WT6BrSmDAA%2Fviewform&ltmpl=forms&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxt1VmED1Pao816MFpSusVZCraG27W9yhwyRzMuVNh26f3s5p59M9-hp4zzGxM7G2N7KEJMRIg
-   → Page Title: Google Forms: Sign-in
- Verified Google redirect via title check
- ✔ Redirect validated successfully (20/20)
