@@ -1,0 +1,4 @@
+
+ → (11) Checking redirect: https://virufy.org/paper
+   → Final URL: https://virufy.org/en/paper/
+   → Page Title: (none)
