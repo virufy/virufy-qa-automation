@@ -1,0 +1,6 @@
+
+ → (12) Checking redirect: https://virufy.org/press
+   → Final URL: https://virufy.org/en/news/
+   → Page Title: Virufy | News and Press Releases
+   → Found Heading: News
+ ✔ Redirect validated successfully (12/20)
