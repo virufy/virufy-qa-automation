@@ -1,0 +1,6 @@
+
+ → (11) Checking redirect: https://virufy.org/paper
+   → Final URL: https://virufy.org/en/paper/
+   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare
+   → Found Heading: Paper
+ ✔ Redirect validated successfully (11/20)
