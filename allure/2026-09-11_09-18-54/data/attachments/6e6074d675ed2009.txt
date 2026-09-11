@@ -1,0 +1,6 @@
+
+ → (14) Checking redirect: https://virufy.org/uae-adghw-apr-2025
+   → Final URL: https://virufy.org/en/news/uae-adghw-apr-2025/
+   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare
+   → Found Heading: Abu Dhabi, United Arab Emirates June 25th, 2025
+ ✔ Redirect validated successfully (14/20)
