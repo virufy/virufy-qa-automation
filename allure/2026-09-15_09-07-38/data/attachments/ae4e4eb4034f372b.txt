@@ -1,0 +1,6 @@
+
+ → (6) Checking redirect: https://virufy.org/join
+   → Final URL: https://virufy.org/en/join-us/
+   → Page Title: Virufy: Developing Cutting Edge AI Technology in Healthcare
+   → Found Heading: Virufy is entirely run by volunteers and pro bono partner companies.
+ ✔ Redirect validated successfully (6/20)
