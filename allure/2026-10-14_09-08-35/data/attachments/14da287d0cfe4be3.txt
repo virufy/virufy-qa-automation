@@ -1,0 +1,3 @@
+
+ → (20) Checking redirect: https://virufy.org/apply
+   → Final URL: https://virufy.org/apply/
