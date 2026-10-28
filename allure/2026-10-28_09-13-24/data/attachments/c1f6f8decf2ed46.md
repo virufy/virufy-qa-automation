@@ -1,0 +1,100 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e5]:
+      - img "Virufy logo" [ref=e7]
+      - paragraph [ref=e9]: We access and store non-sensitive information from your device, like cookies or a unique device identifier, and process personal data like IP addresses for analytics purposes. You may opt out of data processing that isn’t essential to the core functionality of this site by clicking on “Decline and close” on this window.
+      - generic [ref=e10]:
+        - button "Accept and close" [ref=e11] [cursor=pointer]
+        - button "Decline and close" [ref=e12] [cursor=pointer]
+    - navigation [ref=e14]:
+      - generic [ref=e15]:
+        - link "Virufy logo" [ref=e17] [cursor=pointer]:
+          - /url: /en/
+          - img "Virufy logo" [ref=e18] [cursor=pointer]
+        - list [ref=e21]:
+          - generic [ref=e22]:
+            - listitem [ref=e23]:
+              - link "Home" [ref=e25] [cursor=pointer]:
+                - /url: /en/
+            - listitem [ref=e26]:
+              - link "What We Do" [ref=e28] [cursor=pointer]:
+                - /url: /en/ai/
+            - listitem [ref=e29]:
+              - link "Who We Are" [ref=e31] [cursor=pointer]:
+                - /url: /en/story/
+            - listitem [ref=e32]:
+              - link "Media" [ref=e34] [cursor=pointer]:
+                - /url: /en/news/
+            - listitem [ref=e35]:
+              - link "FAQ" [ref=e37] [cursor=pointer]:
+                - /url: /en/faq/
+            - listitem [ref=e38]:
+              - generic [ref=e40]:
+                - textbox "Search..." [ref=e41]
+                - generic [ref=e42]:
+                  - img
+            - listitem [ref=e43]:
+              - button "en flag EN arrow down icon" [ref=e45] [cursor=pointer]:
+                - img "en flag" [ref=e46] [cursor=pointer]
+                - text: EN
+                - img "arrow down icon" [ref=e47] [cursor=pointer]
+          - generic [ref=e48]:
+            - listitem [ref=e49]:
+              - link "Join Us" [ref=e50] [cursor=pointer]:
+                - /url: /en/join-us/
+                - button "Join Us" [ref=e51] [cursor=pointer]
+            - listitem [ref=e52]:
+              - link "Support Us" [ref=e53] [cursor=pointer]:
+                - /url: /en/donate/
+                - button "Support Us" [ref=e54] [cursor=pointer]
+    - generic [ref=e56]:
+      - generic [ref=e60]:
+        - heading "The science behind Virufy" [level=1] [ref=e61]:
+          - text: The science behind
+          - generic [ref=e62]: Virufy
+        - paragraph [ref=e63]: Artificial Intelligence (AI) can identify subtle differences in cough and breathing sounds associated with respiratory conditions.
+      - tabpanel [ref=e66]:
+        - heading "How does AI work?" [level=2] [ref=e67]
+        - generic [ref=e68]:
+          - generic [ref=e70]:
+            - heading "01" [level=3] [ref=e72]
+            - paragraph [ref=e73]: Our groundbreaking app employs cutting-edge AI technology to analyze cough and breathing sounds using deep learning algorithms and audio signal processing techniques.
+          - generic [ref=e75]:
+            - heading "02" [level=3] [ref=e77]
+            - paragraph [ref=e78]: The algorithm scrutinizes various elements of the cough, such as duration, frequency, and pitch. Leveraging a comprehensive database, the AI meticulously compares recorded cough patterns against known indicators of respiratory diseases, allowing to Identify signals associated with respiratory conditions.
+    - generic [ref=e81]:
+      - separator [ref=e83]
+      - generic [ref=e84]:
+        - link "Cookie Policy" [ref=e85] [cursor=pointer]:
+          - /url: /en/cookie-policy/
+        - link "Privacy Policy" [ref=e86] [cursor=pointer]:
+          - /url: /en/privacy-policy/
+        - link "Do Not Sell My Personal Info" [ref=e87] [cursor=pointer]:
+          - /url: /en/do-not-sell-my-data/
+        - link "Intellectual Property" [ref=e88] [cursor=pointer]:
+          - /url: /en/Intellectual-Property/
+      - generic [ref=e89]:
+        - link "Instagram icon" [ref=e90] [cursor=pointer]:
+          - /url: https://www.instagram.com/virufy/
+          - img "Instagram icon" [ref=e91] [cursor=pointer]
+        - link "LinkedIn icon" [ref=e92] [cursor=pointer]:
+          - /url: https://www.linkedin.com/company/virufy/
+          - img "LinkedIn icon" [ref=e93] [cursor=pointer]
+        - link "X icon" [ref=e94] [cursor=pointer]:
+          - /url: https://x.com/VirufyOrg
+          - img "X icon" [ref=e95] [cursor=pointer]
+        - link "Youtube icon" [ref=e96] [cursor=pointer]:
+          - /url: https://www.youtube.com/@virufy1993
+          - img "Youtube icon" [ref=e97] [cursor=pointer]
+      - link "GuideStar Profile" [ref=e99] [cursor=pointer]:
+        - /url: https://www.guidestar.org/profile/shared/f0cf98a8-3b5a-495f-86c0-d2d58564086c
+        - img "GuideStar Profile" [ref=e100] [cursor=pointer]
+      - generic [ref=e101]:
+        - paragraph [ref=e103]: Nonprofit Status
+        - paragraph [ref=e105]: Virufy is a California nonprofit corporation recognized by the United States Internal Revenue Service (IRS) as a tax-exempt public charity under Section 501(c)(3) of the Internal Revenue Code.
+        - paragraph [ref=e107]: ©2025 Virufy | VIRUFY is a trademark of The Covid Detection Foundation, a California nonprofit corporation | All rights reserved
+  - alert [ref=e108]
+```

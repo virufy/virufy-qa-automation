@@ -1,0 +1,94 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "Virufy logo" [ref=e7] [cursor=pointer]:
+          - /url: /en/
+          - img "Virufy logo" [ref=e8] [cursor=pointer]
+        - list [ref=e11]:
+          - generic [ref=e12]:
+            - listitem [ref=e13]:
+              - link "Home" [ref=e15] [cursor=pointer]:
+                - /url: /en/
+            - listitem [ref=e16]:
+              - link "What We Do" [ref=e18] [cursor=pointer]:
+                - /url: /en/ai/
+            - listitem [ref=e19]:
+              - link "Who We Are" [ref=e21] [cursor=pointer]:
+                - /url: /en/story/
+            - listitem [ref=e22]:
+              - link "Media" [ref=e24] [cursor=pointer]:
+                - /url: /en/news/
+            - listitem [ref=e25]:
+              - link "FAQ" [ref=e27] [cursor=pointer]:
+                - /url: /en/faq/
+            - listitem [ref=e28]:
+              - generic [ref=e30]:
+                - textbox "Search..." [ref=e31]
+                - generic [ref=e32]:
+                  - img
+            - listitem [ref=e33]:
+              - button "en flag EN arrow down icon" [ref=e35] [cursor=pointer]:
+                - img "en flag" [ref=e36] [cursor=pointer]
+                - text: EN
+                - img "arrow down icon" [ref=e37] [cursor=pointer]
+          - generic [ref=e38]:
+            - listitem [ref=e39]:
+              - link "Join Us" [ref=e40] [cursor=pointer]:
+                - /url: /en/join-us/
+                - button "Join Us" [ref=e41] [cursor=pointer]
+            - listitem [ref=e42]:
+              - link "Support Us" [ref=e43] [cursor=pointer]:
+                - /url: /en/donate/
+                - button "Support Us" [ref=e44] [cursor=pointer]
+    - generic [ref=e46]:
+      - generic [ref=e50]:
+        - heading "The science behind Virufy" [level=1] [ref=e51]:
+          - text: The science behind
+          - generic [ref=e52]: Virufy
+        - paragraph [ref=e53]: Artificial Intelligence (AI) can identify subtle differences in cough and breathing sounds associated with respiratory conditions.
+      - tabpanel [ref=e56]:
+        - heading "How does AI work?" [level=2] [ref=e57]
+        - generic [ref=e58]:
+          - generic [ref=e60]:
+            - heading "01" [level=3] [ref=e62]
+            - paragraph [ref=e63]: Our groundbreaking app employs cutting-edge AI technology to analyze cough and breathing sounds using deep learning algorithms and audio signal processing techniques.
+          - generic [ref=e65]:
+            - heading "02" [level=3] [ref=e67]
+            - paragraph [ref=e68]: The algorithm scrutinizes various elements of the cough, such as duration, frequency, and pitch. Leveraging a comprehensive database, the AI meticulously compares recorded cough patterns against known indicators of respiratory diseases, allowing to Identify signals associated with respiratory conditions.
+    - generic [ref=e71]:
+      - separator [ref=e73]
+      - generic [ref=e74]:
+        - link "Cookie Policy" [ref=e75] [cursor=pointer]:
+          - /url: /en/cookie-policy/
+        - link "Privacy Policy" [ref=e76] [cursor=pointer]:
+          - /url: /en/privacy-policy/
+        - link "Do Not Sell My Personal Info" [ref=e77] [cursor=pointer]:
+          - /url: /en/do-not-sell-my-data/
+        - link "Intellectual Property" [ref=e78] [cursor=pointer]:
+          - /url: /en/Intellectual-Property/
+      - generic [ref=e79]:
+        - link "Instagram icon" [ref=e80] [cursor=pointer]:
+          - /url: https://www.instagram.com/virufy/
+          - img "Instagram icon" [ref=e81] [cursor=pointer]
+        - link "LinkedIn icon" [ref=e82] [cursor=pointer]:
+          - /url: https://www.linkedin.com/company/virufy/
+          - img "LinkedIn icon" [ref=e83] [cursor=pointer]
+        - link "X icon" [ref=e84] [cursor=pointer]:
+          - /url: https://x.com/VirufyOrg
+          - img "X icon" [ref=e85] [cursor=pointer]
+        - link "Youtube icon" [ref=e86] [cursor=pointer]:
+          - /url: https://www.youtube.com/@virufy1993
+          - img "Youtube icon" [ref=e87] [cursor=pointer]
+      - link "GuideStar Profile" [ref=e89] [cursor=pointer]:
+        - /url: https://www.guidestar.org/profile/shared/f0cf98a8-3b5a-495f-86c0-d2d58564086c
+        - img "GuideStar Profile" [ref=e90] [cursor=pointer]
+      - generic [ref=e91]:
+        - paragraph [ref=e93]: Nonprofit Status
+        - paragraph [ref=e95]: Virufy is a California nonprofit corporation recognized by the United States Internal Revenue Service (IRS) as a tax-exempt public charity under Section 501(c)(3) of the Internal Revenue Code.
+        - paragraph [ref=e97]: ©2025 Virufy | VIRUFY is a trademark of The Covid Detection Foundation, a California nonprofit corporation | All rights reserved
+  - alert [ref=e98]
+```
